@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import List, Type, Generator, TypeVar, Generic, NoReturn
 
-from libs.generic_types_helpers import get_generic_type_arg
+from utils.generic_types_helpers import get_generic_type_arg
 from db.models.base import Base
 from db.transport import DbTransport
 
