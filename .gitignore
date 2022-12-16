@@ -1,0 +1,10 @@
+.idea
+*venv
+*virtualenv
+*.pyc
+*/.pytest_cache
+
+*.log
+*.sql
+
+.env
