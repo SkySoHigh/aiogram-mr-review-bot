@@ -7,6 +7,7 @@ class CommonConfig(BaseSettings):
     token: SecretStr = Field(..., env="token")
     admins: List[int] = Field(..., env="admins")
     log_cfg_path: str = Field("./configs/logging.json", env="log_cfg_path")
+    task_limit: int = Field(5, env='task_limit')
 
     class Config:
         case_sentive = False
