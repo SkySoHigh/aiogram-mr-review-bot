@@ -20,5 +20,5 @@ class TasksModel(Base):
     origin_chat = Column(Integer, nullable=False)
     applicant = Column(Integer, nullable=False)
     application_time = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
-    executor = Column(Integer, nullable=True)
+    reviewer = Column(Integer, nullable=True)
     acceptance_time = Column(DateTime(timezone=True), nullable=True)
