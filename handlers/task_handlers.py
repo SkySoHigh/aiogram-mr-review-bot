@@ -24,6 +24,7 @@ async def publish_task_for_review(message: types.Message):
         task = TasksModel(url=message.text.strip().split(' ', 1)[1],
                           status=TaskStates.NEW,
                           origin_chat=message.chat.id,
+                          msg_id=message.message_id,
                           applicant=message.from_user.id,
                           application_time=message.date)
         app.db_client.tasks.create(task)
@@ -54,7 +55,9 @@ async def take_review_task(query: types.CallbackQuery):
     app.db_client.tasks.update_by(id=task_id,
                                   values={'status': TaskStates.ON_REVIEW,
                                           'acceptance_time': datetime.now(),
-                                          'reviewer': query.from_user.id})
+                                          'reviewer': query.from_user.id,
+                                          'msg_id': query.message.message_id
+                                          })
     task = app.db_client.tasks.read_by(id=task_id)[0]
 
     reviewer = await app.bot.get_chat_member(task.origin_chat, task.reviewer)
@@ -63,7 +66,7 @@ async def take_review_task(query: types.CallbackQuery):
                                          f'{Locale.TaskSubmitted.SUBMITTED_MSG_ACCEPTED_BY} {reviewer.user.first_name} {reviewer.user.last_name}\n'
                                          f'-> {task.id}',
                                     chat_id=task.origin_chat,
-                                    message_id=query.message.message_id,
+                                    message_id=task.msg_id,
                                     reply_markup=get_tasks_submitted_menu())
 
 
@@ -82,11 +85,18 @@ async def confirm_review_task(query: types.CallbackQuery):
         app.db_client.tasks.update_by(id=task_id,
                                       values={'status': TaskStates.COMPLETED,
                                               'acceptance_time': acceptance_time})
-        await app.bot.edit_message_text(
-            text=f'{Locale.TaskConfirmed.CONFIRMED_MSG_COMPLETION_TIME} {acceptance_time}\n'
-                 f'{Locale.TaskSubmitted.SUBMITTED_MSG_ACCEPTED_BY} {db_reviewer.user.first_name} {db_reviewer.user.last_name}\n'
-                 f'-> {task.id}',
-            chat_id=task.origin_chat,
-            message_id=query.message.message_id)
+        text = [
+            f'{Locale.TaskConfirmed.CONFIRMED_MSG_COMPLETION_TIME} {acceptance_time}',
+            f'{Locale.TaskSubmitted.SUBMITTED_MSG_ACCEPTED_BY} {db_reviewer.user.first_name} {db_reviewer.user.last_name}',
+            f'-> {task.id}'
+        ]
+
+        await app.bot.edit_message_text(text='\n'.join(text), chat_id=task.origin_chat, message_id=task.msg_id)
+
+        # If msg edited from pm = update both
+        if task.msg_id != query.message.message_id:
+            await app.bot.edit_message_text(text='\n'.join(text), chat_id=query.message.chat.id,
+                                            message_id=query.message.message_id)
+
     else:
         await query.message.reply(text=Locale.Error.UNABLE_TO_CONFIRM_TASK_BY_ANY_USER)

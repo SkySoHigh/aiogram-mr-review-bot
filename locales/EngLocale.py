@@ -12,7 +12,8 @@ class Locale:
     class Menu:
         MENU_HEADER = 'Menu:'
         SHOW_TASKS_BTN = 'Show my tasks'
-        SHOW_TASKS_BTN_CONFIRMED_MSG = 'Your review tasks are sent to pm'
+        SHOW_TASKS_LIMIT_MSG = 'There is a limit of retrieved tasks per request:'
+        SHOW_TASKS_CONFIRMED_MSG = 'Your review tasks are sent to pm'
         SHOW_ADM_MENU_BTN = 'Show admin menu'
         SHOW_ADM_MENU_BTN_CONFIRMED_MSG = 'Admin menu is sent to pm'
 
@@ -20,6 +21,7 @@ class Locale:
         NEW_TASK_MSG = 'New task submitted!\n' \
                      'Anyone want to take it?'
         TAKE_NEW_TASK_BTN = 'Take it!'
+        NO_TASKS_MSG = 'Congrats! You have no task on review!'
 
     class TaskSubmitted:
         SUBMITTED_MSG_ACCEPTED_TIME = 'Accepted:'
