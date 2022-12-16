@@ -6,7 +6,6 @@ from configs import ConfigProvider
 from db.client import DBClient
 from db.models.base import Base
 from db.transport import DbTransport
-from services.task_service import TaskService
 
 
 class Loader:
