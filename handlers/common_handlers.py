@@ -4,8 +4,8 @@ from locales import Locale
 
 
 async def start(message: types.Message):
-    await message.reply(Locale.StartUp.GREETING_MSG)
+    await message.reply(Locale.Common.GREETING_MSG)
 
 
 async def help(message: types.Message):
-    await message.reply(Locale.StartUp.HELP_MSG)
+    await message.reply(Locale.Common.HELP_MSG)

@@ -1,11 +1,13 @@
 class Locale:
-    class StartUp:
+    class Common:
         GREETING_MSG = f'Hello, i am QA Review Bot reminder.\n' \
                        f'For more info pls send me: /help'
 
         HELP_MSG = f'This is QA Review Bot to distribute review tasks among testers.' \
                    f'Please, send me link to MR via:\n' \
                    f'/review *link*'
+
+        CHAT_ORIGIN_MSG = 'Origin:'
 
     class Menu:
         MENU_HEADER = 'Menu:'
