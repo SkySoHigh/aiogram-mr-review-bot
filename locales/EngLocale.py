@@ -34,3 +34,7 @@ class Locale:
                                           'Pls, send me review command with link to MR separated by whitespace.\n' \
                                           'More info: /help'
         UNABLE_TO_CONFIRM_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could confirm review task.'
+        CONTACT_ADMINISTRATOR = 'Please, contact administrator.'
+        MESSAGE_FORWARD_NOT_FOUND = 'Message to forward not found. Looks like someone removed bot task from chat.'
+        MESSAGE_TO_EDIT_NOT_FOUND = 'Message to edit not found. Looks like someone removed bot task from chat.'
+
