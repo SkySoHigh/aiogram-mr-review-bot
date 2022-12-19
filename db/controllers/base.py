@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from typing import List, Type, Generator, TypeVar, Generic, NoReturn
 
-from utils.generic_types_helpers import get_generic_type_arg
 from db.models.base import Base
 from db.transport import DbTransport
+from utils.generic_types_helpers import get_generic_type_arg
 
 DB_MODEL_TYPE = TypeVar("DB_MODEL_TYPE", bound=Base)
 
