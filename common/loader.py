@@ -6,6 +6,7 @@ from configs import ConfigProvider
 from db.client import DBClient
 from db.models.base import Base
 from db.transport import DbTransport
+from services import TaskService
 
 
 class Loader:
@@ -17,11 +18,13 @@ class Loader:
         self.__periodic_task = None
 
         # Db client and services
-        self.db_client = DBClient(transport=DbTransport(
+        self.__db_client = DBClient(transport=DbTransport(
             url=self.config.db.dsn,
             echo=self.config.db.echo_db_queries,
             echo_pool=self.config.db.echo_db_pool
         ))
+
+        self.task_service = TaskService(client=self.__db_client)
 
     @property
     def periodic_task(self) -> Task:
@@ -32,4 +35,4 @@ class Loader:
         self.__periodic_task = coroutine
 
     def init_db(self):
-        Base.metadata.create_all(self.db_client.transport.engine)
+        Base.metadata.create_all(self.__db_client.transport.engine)

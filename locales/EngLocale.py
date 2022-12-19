@@ -7,38 +7,59 @@ class Locale:
                    f'Please, send me link to MR via:\n' \
                    f'/review *link*'
 
-        CHAT_ORIGIN_MSG = 'Origin:'
+        CHAT_ORIGIN_MSG = 'From:'
 
     class Menu:
         MENU_HEADER = 'Menu:'
-        SHOW_TASKS_BTN = 'Show my tasks'
-        SHOW_TASKS_LIMIT_MSG = 'There is a limit of retrieved tasks per request:'
-        SHOW_TASKS_CONFIRMED_MSG = 'Your review tasks are sent to pm'
-        SHOW_ADM_MENU_BTN = 'Show admin menu'
-        SHOW_ADM_MENU_BTN_CONFIRMED_MSG = 'Admin menu is sent to pm'
+        SHOW_USER_TASKS_BTN = 'Send my active tasks to pm'
+        SHOW_ALL_TASKS_BTN = '[Admin] show all active tasks'
+        SHOW_ADM_MENU_BTN = '[Admin] send menu to pm'
 
-    class NewTaskOnReview:
-        NEW_TASK_MSG = 'New task submitted!\n' \
-                     'Anyone want to take it?'
-        TAKE_NEW_TASK_BTN = 'Take it!'
-        NO_TASKS_MSG = 'Congrats! You have no task on review!'
+    class Task:
+        # General
+        ID = 'Id'
+        STATUS = 'Status'
+        URL = 'Link'
 
-    class TaskSubmitted:
-        SUBMITTED_MSG_ACCEPTED_TIME = 'Accepted:'
-        SUBMITTED_MSG_REQUESTED_BY = 'Applicant:'
-        SUBMITTED_MSG_ACCEPTED_BY = 'Reviewer:'
+        # When published
+        PUBLISHED_AT = 'Published at'
+        PUBLISHED_BY = 'Publisher'
 
-    class TaskConfirmed:
-        CONFIRMED_MSG_COMPLETION_TIME = 'Completed:'
-        CONFIRMED_TASK_BTN = 'Done!'
+        # When taken on review
+        REVIEWED_BY = 'Reviewer'
+        TAKEN_TO_REVIEW_AT = 'Taken to review at'
+
+        # When on review
+        SUBMITTED_TO_FINAL_REVIEW = 'Submitted to confirm:'
+
+        # When completed
+        COMPLETED_AT = 'Completed at'
+        COMPLETED_BY = 'Final reviewer'
+
+        # BTNS
+        # \- When taken on review
+        TAKE_BTN = 'Take'
+
+        # \- When on review
+        SUBMIT_BTN = 'Submit'
+
+        # \- When completed
+        CONFIRMED_BTN = 'Confirm'
+        REJECT_BTN = 'Reject'
+
+        # Other
+        NO_TASKS_MSG = 'There is no tasks on review!'
+        TASK_LIMIT_IS = 'Task query limit per time is'
 
     class Error:
         UNABLE_TO_INITIALIZE_CHAT = 'Bot can\'t initiate conversation with a user. Please, add me firs.'
         INCORRECT_REVIEW_SUBMIT_COMMAND = 'Incorrect command.\n' \
                                           'Pls, send me review command with link to MR separated by whitespace.\n' \
                                           'More info: /help'
-        UNABLE_TO_CONFIRM_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could confirm review task.'
+        UNABLE_TO_SUBMIT_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could submit task to final review.'
+        UNABLE_TO_CONFIRM_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could confirm reviewed task.'
+        UNABLE_REJECT_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could reject task review.'
         CONTACT_ADMINISTRATOR = 'Please, contact administrator.'
         MESSAGE_FORWARD_NOT_FOUND = 'Message to forward not found. Looks like someone removed bot task from chat.'
         MESSAGE_TO_EDIT_NOT_FOUND = 'Message to edit not found. Looks like someone removed bot task from chat.'
-
+        TO_MANY_UNFINISHED_TASKS = 'To many unfinished tasks'
