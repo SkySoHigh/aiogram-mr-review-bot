@@ -7,16 +7,22 @@ from locales import Locale
 
 
 class MainMenu(str, Enum):
-    get_tasks = Locale.Menu.SHOW_TASKS_BTN
+    send_tasks_to_pm = Locale.Menu.SHOW_USER_TASKS_BTN
+    send_tasks_to_group_chat = Locale.Menu.SHOW_ALL_TASKS_BTN
     show_adm_menu = Locale.Menu.SHOW_ADM_MENU_BTN
 
 
 class TaskMenuOnReview(str, Enum):
-    take = Locale.NewTaskOnReview.TAKE_NEW_TASK_BTN
+    take = Locale.Task.TAKE_BTN
 
 
-class TaskMenuConfirmed(str, Enum):
-    confirmed = Locale.TaskConfirmed.CONFIRMED_TASK_BTN
+class TaskMenuFinalReview(str, Enum):
+    submitted = Locale.Task.SUBMIT_BTN
+
+
+class TaskMenuReviewFinished(str, Enum):
+    confirmed = Locale.Task.CONFIRMED_BTN
+    canceled = Locale.Task.REJECT_BTN
 
 
 def get_tasks_on_review_menu():
@@ -28,7 +34,14 @@ def get_tasks_on_review_menu():
 
 def get_tasks_submitted_menu():
     kb = InlineKeyboardMarkup()
-    for m in TaskMenuConfirmed:
+    for m in TaskMenuFinalReview:
+        kb.add(InlineKeyboardButton(text=m, callback_data=ReviewCallBack.new(m)))
+    return kb
+
+
+def get_tasks_confirmation_menu():
+    kb = InlineKeyboardMarkup()
+    for m in TaskMenuReviewFinished:
         kb.add(InlineKeyboardButton(text=m, callback_data=ReviewCallBack.new(m)))
     return kb
 
