@@ -1,6 +1,5 @@
-from db.controllers.base import BaseDBController
-from db.transport import DbTransport
 from db.controllers.tasks import TasksController
+from db.transport import DbTransport
 
 __all__ = [
     'DBClient'
