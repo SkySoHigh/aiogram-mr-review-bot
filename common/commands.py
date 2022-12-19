@@ -26,11 +26,11 @@ class CommandUnSetReminder(Command):
 async def set_default_commands(dp: Dispatcher) -> None:
     await dp.bot.set_my_commands(
         [
-            types.BotCommand(CommandHelp().commands[0], "show help"),
-            types.BotCommand(CommandStart().commands[0], "start bot"),
+            types.BotCommand(CommandHelp().commands[0], "Show help"),
+            types.BotCommand(CommandStart().commands[0], "Start bot"),
 
-            types.BotCommand(CommandMenu().commands[0], "show main menu"),
+            types.BotCommand(CommandMenu().commands[0], "Show main menu"),
 
-            types.BotCommand(CommandPublishReview().commands[0], "Submit link on review"),
+            types.BotCommand(CommandPublishReview().commands[0], "Submit link to review"),
         ]
     )
