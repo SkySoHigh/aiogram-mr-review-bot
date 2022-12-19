@@ -2,10 +2,10 @@ from typing import Union, List
 
 from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
+from common import app
 
 
 class AdminFilter(BoundFilter):
-    ADMIN_IDS: List[int] = []  # Should be set before binding to bot
 
     key = "is_admin"
 
@@ -14,6 +14,6 @@ class AdminFilter(BoundFilter):
 
     async def check(self, obj: Union[types.Message, types.CallbackQuery]):
         user = obj.from_user
-        if user.id in AdminFilter.ADMIN_IDS:
+        if user.id in app.config.common.admins:
             return self.is_admin is True
         return self.is_admin is False
