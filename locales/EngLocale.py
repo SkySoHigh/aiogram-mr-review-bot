@@ -44,8 +44,8 @@ class Locale:
         SUBMIT_BTN = 'Submit'
 
         # \- When completed
-        CONFIRMED_BTN = 'Confirm'
-        REJECT_BTN = 'Reject'
+        CONFIRMED_BTN = '[Admin] Confirm'
+        REJECT_BTN = '[Admin] Reject'
 
         # Other
         NO_TASKS_MSG = 'There is no tasks on review!'
@@ -57,9 +57,10 @@ class Locale:
                                           'Pls, send me review command with link to MR separated by whitespace.\n' \
                                           'More info: /help'
         UNABLE_TO_SUBMIT_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could submit task to final review.'
-        UNABLE_TO_CONFIRM_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could confirm reviewed task.'
-        UNABLE_REJECT_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could reject task review.'
+        ADMIN_RIGHTS_REQUIRED = 'Forbidden. Admins rights required'
+
         CONTACT_ADMINISTRATOR = 'Please, contact administrator.'
         MESSAGE_FORWARD_NOT_FOUND = 'Message to forward not found. Looks like someone removed bot task from chat.'
         MESSAGE_TO_EDIT_NOT_FOUND = 'Message to edit not found. Looks like someone removed bot task from chat.'
         TO_MANY_UNFINISHED_TASKS = 'To many unfinished tasks'
+        ERROR_MSG_WILL_BE_REMOVED_IN = 'Error msg will be removed in'
