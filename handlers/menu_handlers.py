@@ -21,8 +21,7 @@ async def show_main_menu(message: types.Message):
 async def show_adm_menu(query: types.CallbackQuery):
     if await is_admin.check(query):
         await app.bot.send_message(chat_id=query.from_user.id,
-                                   text=f'{Locale.Common.CHAT_ORIGIN_MSG}\n'
-                                        f'Admins menu',
+                                   text=f'{Locale.Common.CHAT_ORIGIN_MSG}\n',
                                    disable_notification=True,
                                    )
     else:
