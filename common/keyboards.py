@@ -2,7 +2,7 @@ from enum import Enum
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from keyboard.callbacks import ReviewCallBack, MenuCallBack
+from common import callbacks
 from locales import Locale
 
 
@@ -22,32 +22,32 @@ class TaskMenuFinalReview(str, Enum):
 
 class TaskMenuReviewFinished(str, Enum):
     confirmed = Locale.Task.CONFIRMED_BTN
-    canceled = Locale.Task.REJECT_BTN
+    rejected = Locale.Task.REJECT_BTN
 
 
 def get_tasks_on_review_menu():
     kb = InlineKeyboardMarkup()
     for m in TaskMenuOnReview:
-        kb.add(InlineKeyboardButton(text=m, callback_data=ReviewCallBack.new(m)))
+        kb.add(InlineKeyboardButton(text=m, callback_data=callbacks.ReviewCallBack.new(m)))
     return kb
 
 
 def get_tasks_submitted_menu():
     kb = InlineKeyboardMarkup()
     for m in TaskMenuFinalReview:
-        kb.add(InlineKeyboardButton(text=m, callback_data=ReviewCallBack.new(m)))
+        kb.add(InlineKeyboardButton(text=m, callback_data=callbacks.ReviewCallBack.new(m)))
     return kb
 
 
 def get_tasks_confirmation_menu():
     kb = InlineKeyboardMarkup()
     for m in TaskMenuReviewFinished:
-        kb.add(InlineKeyboardButton(text=m, callback_data=ReviewCallBack.new(m)))
+        kb.add(InlineKeyboardButton(text=m, callback_data=callbacks.ReviewCallBack.new(m)))
     return kb
 
 
 def get_main_menu():
     kb = InlineKeyboardMarkup()
     for m in MainMenu:
-        kb.add(InlineKeyboardButton(text=m, callback_data=MenuCallBack.new(m)))
+        kb.add(InlineKeyboardButton(text=m, callback_data=callbacks.MenuCallBack.new(m)))
     return kb

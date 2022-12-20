@@ -3,7 +3,7 @@ from datetime import datetime
 
 from aiogram import types
 
-from common import app
+from loader import app, dp
 
 
 async def periodic_reminder(sleep_for=5):
