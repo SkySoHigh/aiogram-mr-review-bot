@@ -85,7 +85,8 @@ async def confirm_reviewed_task_cb(query: types.CallbackQuery):
         await update_view_with_db_data(task_id=task_id,
                                        query=query,
                                        )
-    await show_error_msg_for_n_seconds(obj=query, error_msg=Locale.Error.ADMIN_RIGHTS_REQUIRED)
+    else:
+        await show_error_msg_for_n_seconds(obj=query, error_msg=Locale.Error.ADMIN_RIGHTS_REQUIRED)
 
 
 @dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuReviewFinished.rejected))
@@ -104,47 +105,82 @@ async def reject_reviewed_task(query: types.CallbackQuery):
 
 @dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.MainMenu.send_tasks_to_pm))
 async def send_user_tasks_on_review_to_pm(query: types.CallbackQuery):
-    await send_tasks_on_review_to_reviewer(query=query)
+    await send_users_tasks_on_review_to_pm(query=query)
 
 
 @dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.MainMenu.send_tasks_to_group_chat))
 async def send_all_tasks_on_review_to_chat(query: types.CallbackQuery):
-    await send_tasks_on_review_to_reviewer(query=query, to_group_chat=True)
+    await send_tasks_on_review_to_chat(query=query)
 
 
-async def send_tasks_on_review_to_reviewer(query: types.CallbackQuery, *, to_group_chat: bool = False):
-    if to_group_chat is True:
-        tasks = app.task_service.get_all_tasks_on_review(chat_id=query.message.chat.id)
-    else:
-        tasks = app.task_service.get_all_tasks_on_review(chat_id=query.message.chat.id, reviewer_id=query.from_user.id)
-
+async def send_users_tasks_on_review_to_pm(query: types.CallbackQuery, ):
+    tasks = app.task_service.get_all_tasks_on_review(chat_id=query.message.chat.id, reviewer_id=query.from_user.id)
     header_msg = f'{Locale.Common.CHAT_ORIGIN_MSG} {query.message.chat.title}'
 
     if not tasks:
-        await query.bot.send_message(chat_id=query.message.chat.id if to_group_chat else query.from_user.id,
+        await query.bot.send_message(chat_id=query.from_user.id,
                                      text=f'{header_msg}\n'
                                           f'{Locale.Task.NO_TASKS_MSG}')
-    else:
-        sent_tasks = 0
-        for t in tasks:
-            if sent_tasks == app.config.common.task_limit:
-                tasks_count = app.task_service.count_tasks_on_review(query.message.chat.id)
-                await query.bot.send_message(text=f'{Locale.Error.TO_MANY_UNFINISHED_TASKS}: {tasks_count}\n'
-                                                  f'{Locale.Task.TASK_LIMIT_IS}: {app.config.common.task_limit}',
-                                             chat_id=t.chat_id if to_group_chat else t.reviewer_id,
-                                             disable_notification=True)
-                break
+        return
 
-            await query.bot.send_message(
-                text=f'{header_msg}\n'
-                     f'{generate_task_view(t)}',
-                chat_id=t.chat_id if to_group_chat else t.reviewer_id,
-                reply_markup=keyboards.get_tasks_confirmation_menu()
-                if t.submitted_to_final_review_at else keyboards.get_tasks_submitted_menu(),
-                disable_web_page_preview=True,
-            )
+    sent_tasks = 0
+    for t in tasks:
+        if sent_tasks == app.config.common.task_limit:
+            tasks_count = app.task_service.count_tasks_on_review(query.message.chat.id)
+            await query.bot.send_message(text=f'{Locale.Error.TO_MANY_UNFINISHED_TASKS}: {tasks_count}\n'
+                                              f'{Locale.Task.TASK_LIMIT_IS}: {app.config.common.task_limit}',
+                                         chat_id=t.reviewer_id,
+                                         disable_notification=True)
+            break
 
-            sent_tasks += 1
+        # await query.bot.forward_message(chat_id=t.reviewer_id,
+        #                                 from_chat_id=t.chat_id,
+        #                                 message_id=t.reply_msg_id, )
+        await query.bot.send_message(
+            text=f'{header_msg}\n'
+                 f'{generate_task_view(t)}',
+            chat_id=t.reviewer_id,
+            disable_web_page_preview=True,
+        )
+        sent_tasks += 1
+
+
+async def send_tasks_on_review_to_chat(query: types.CallbackQuery):
+    tasks = app.task_service.get_all_tasks_on_review(chat_id=query.message.chat.id, reviewer_id=query.from_user.id)
+    header_msg = f'{Locale.Common.CHAT_ORIGIN_MSG} {query.message.chat.title}'
+
+    if not tasks:
+        await query.bot.send_message(chat_id=query.message.chat.id,
+                                     text=f'{header_msg}\n'
+                                          f'{Locale.Task.NO_TASKS_MSG}')
+        return
+
+    sent_tasks = 0
+    task_to_reply_msg_id = []  # (task id | new reply msg | old reply msg )
+    for t in tasks:
+        if sent_tasks == app.config.common.task_limit:
+            tasks_count = app.task_service.count_tasks_on_review(query.message.chat.id)
+            await query.bot.send_message(text=f'{Locale.Error.TO_MANY_UNFINISHED_TASKS}: {tasks_count}\n'
+                                              f'{Locale.Task.TASK_LIMIT_IS}: {app.config.common.task_limit}',
+                                         chat_id=t.chat_id,
+                                         disable_notification=True)
+            break
+
+        msg = await query.bot.send_message(
+            text=f'{header_msg}\n'
+                 f'{generate_task_view(t)}',
+            chat_id=t.chat_id,
+            reply_markup=keyboards.get_tasks_confirmation_menu() if t.submitted_to_final_review_at
+            else keyboards.get_tasks_submitted_menu(),
+            disable_web_page_preview=True,
+        )
+        task_to_reply_msg_id.append((t.id, msg.message_id, t.reply_msg_id))
+
+        sent_tasks += 1
+
+    for u in task_to_reply_msg_id:
+        app.task_service.set_reply_msg_id(u[0], u[1])
+        await query.bot.delete_message(query.message.chat.id, u[2])
 
 
 async def update_view_with_db_data(task_id: int, query: types.CallbackQuery,
@@ -158,10 +194,10 @@ async def update_view_with_db_data(task_id: int, query: types.CallbackQuery,
                                       )
     # If msg edited from private message -> update origin (chat from which task came from) OR ...
     # If it is private user's chat with bot -> update origin (chat from which task came from -> this chat)
-    # if (task.chat_id != query.message.chat.id) or (task.reviewer_id == query.message.chat.id):
-    # await app.bot.edit_message_text(text=generate_task_view(task),
-    #                                 chat_id=query.message.chat.id,
-    #                                 message_id=query.message.message_id,
-    #                                 reply_markup=reply_markup,
-    #                                 disable_web_page_preview=True,
-    #                                 )
+    # if task.reply_msg_id != query.message.message_id:
+    #     await app.bot.edit_message_text(text=generate_task_view(task),
+    #                                     chat_id=query.message.chat.id,
+    #                                     message_id=query.message.message_id,
+    #                                     reply_markup=reply_markup,
+    #                                     disable_web_page_preview=True,
+    #                                     )

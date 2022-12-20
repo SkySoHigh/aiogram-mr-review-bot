@@ -77,3 +77,8 @@ class TaskService:
             return self.__client.tasks.get_count_by_status_with_filter(status=[TaskStates.ON_REVIEW,
                                                                                TaskStates.FINAL_REVIEW_REQUIRED],
                                                                        chat_id=chat_id)
+
+    def set_reply_msg_id(self, task_id: int, reply_msg_id: int):
+        return self.__client.tasks.update_by(values={'reply_msg_id': reply_msg_id},
+                                             id=task_id,
+                                             )
