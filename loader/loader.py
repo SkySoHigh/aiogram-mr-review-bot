@@ -10,11 +10,11 @@ from services import TaskService
 
 
 class Loader:
-    def __init__(self):
-        # Config and common parts
-        self.config = ConfigProvider()
-        self.bot = Bot(token=self.config.common.token.get_secret_value())
-        self.dp = Dispatcher(bot=self.bot)
+    def __init__(self, config: ConfigProvider, bot: Bot, dp: Dispatcher):
+        # Config and loader parts
+        self.config = config
+        self.bot = bot
+        self.dp = dp
         self.__periodic_task = None
 
         # Db client and services
