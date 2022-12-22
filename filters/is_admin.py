@@ -24,11 +24,9 @@ class AdminFilter(BoundFilter):
             chat_admins.extend([a.user.id for a in await obj.bot.get_chat_administrators(chat_id=obj.message.chat.id)])
         else:
             chat_admins.append(obj.from_user.id)
-        print('AAAA')
         if user.id in [app.config.common.admins, *chat_admins]:
             return self.is_admin is True
         else:
-            # await self.handle_no_rights_error(obj)
             return self.is_admin is False
 
 
