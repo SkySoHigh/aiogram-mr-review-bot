@@ -1,11 +1,14 @@
 import re
+from typing import Union
+
+from aiogram import types
 
 from db.models.tasks import TasksModel
 from locales import Locale
 from utils import pprint_datetime
 
 
-def generate_task_view(task_model: TasksModel):
+def generate_task_body(task_model: TasksModel) -> str:
     return f'{Locale.Task.ID}: {task_model.id}\n' \
            f'{Locale.Task.STATUS}: {task_model.status.name}\n' \
            f'{Locale.Task.URL}: {task_model.url}\n' \
@@ -27,3 +30,7 @@ def get_id_from_view_text(message: str) -> int:
         return re.findall(pattern=Locale.Task.ID + ":\s(\\d+)", string=message)[0]
     except KeyError:
         raise KeyError  # !TODO raise normal exception
+
+
+def generate_task_header(query: Union[types.Message, types.CallbackQuery]) -> str:
+    return f'{Locale.Common.CHAT_ORIGIN_MSG} {query.message.chat.title}\n\n'
