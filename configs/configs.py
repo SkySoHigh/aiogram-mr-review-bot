@@ -6,7 +6,7 @@ from pydantic import BaseSettings, SecretStr, Field, BaseModel
 class CommonConfig(BaseSettings):
     token: SecretStr = Field(..., env="token")
     admins: List[int] = Field(..., env="admins")
-    log_cfg_path: str = Field("./configs/logging.json", env="log_cfg_path")
+    log_cfg_path: str = Field("", env="log_cfg_path")
     task_limit: int = Field(5, env='task_limit')
 
     class Config:
@@ -21,7 +21,7 @@ class DbConfig(BaseSettings):
     password: SecretStr = Field(..., env="password")
     host: str = Field(..., env="host")
     port: int = Field(..., env="port")
-    sid: str = Field('review', env="sid")
+    sid: str = Field('', env="sid")
 
     dsn: str = Field(None, env="dsn")
 
