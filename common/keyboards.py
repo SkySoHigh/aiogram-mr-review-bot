@@ -1,53 +1,59 @@
 from enum import Enum
 
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pydantic import BaseModel
 
 from common import callbacks
 from locales import Locale
 
 
-class MainMenu(str, Enum):
-    send_tasks_to_pm = Locale.Menu.SHOW_USER_TASKS_BTN
-    send_tasks_to_group_chat = Locale.Menu.SHOW_ALL_TASKS_BTN
-    show_adm_menu = Locale.Menu.SHOW_ADM_MENU_BTN
+class TextToCallback(BaseModel):
+    text: str
+    cb: str
 
 
-class TaskMenuOnReview(str, Enum):
-    take = Locale.Task.TAKE_BTN
+class MainMenu(Enum):
+    send_tasks_to_pm = TextToCallback(text=Locale.Menu.SHOW_USER_TASKS_BTN, cb='send_task_t_pm')
+    send_tasks_to_group_chat = TextToCallback(text=Locale.Menu.SHOW_ALL_TASKS_BTN, cb='send_active_tasks_to_chat')
+    show_adm_menu = TextToCallback(text=Locale.Menu.SHOW_ADM_MENU_BTN, cb='send_active_tasks_to_pm')
 
 
-class TaskMenuFinalReview(str, Enum):
-    submitted = Locale.Task.SUBMIT_BTN
+class TaskMenuOnReview(Enum):
+    take = TextToCallback(text=Locale.Task.TAKE_BTN, cb='take_task')
 
 
-class TaskMenuReviewFinished(str, Enum):
-    confirmed = Locale.Task.CONFIRMED_BTN
-    rejected = Locale.Task.REJECT_BTN
+class TaskMenuFinalReview(Enum):
+    submitted = TextToCallback(text=Locale.Task.SUBMIT_BTN, cb='submit_task')
+
+
+class TaskMenuReviewFinished(Enum):
+    confirmed = TextToCallback(text=Locale.Task.CONFIRMED_BTN, cb='confirm_task')
+    rejected = TextToCallback(text=Locale.Task.REJECT_BTN, cb='reject_task')
 
 
 def get_tasks_on_review_menu():
     kb = InlineKeyboardMarkup()
     for m in TaskMenuOnReview:
-        kb.add(InlineKeyboardButton(text=m, callback_data=callbacks.ReviewCallBack.new(m)))
+        kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.ReviewCallBack.new(m.value.cb)))
     return kb
 
 
 def get_tasks_submitted_menu():
     kb = InlineKeyboardMarkup()
     for m in TaskMenuFinalReview:
-        kb.add(InlineKeyboardButton(text=m, callback_data=callbacks.ReviewCallBack.new(m)))
+        kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.ReviewCallBack.new(m.value.cb)))
     return kb
 
 
 def get_tasks_confirmation_menu():
     kb = InlineKeyboardMarkup()
     for m in TaskMenuReviewFinished:
-        kb.add(InlineKeyboardButton(text=m, callback_data=callbacks.ReviewCallBack.new(m)))
+        kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.ReviewCallBack.new(m.value.cb)))
     return kb
 
 
 def get_main_menu():
     kb = InlineKeyboardMarkup()
     for m in MainMenu:
-        kb.add(InlineKeyboardButton(text=m, callback_data=callbacks.MenuCallBack.new(m)))
+        kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.MenuCallBack.new(m.value.cb)))
     return kb

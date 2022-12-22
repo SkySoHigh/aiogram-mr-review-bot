@@ -17,7 +17,7 @@ async def show_main_menu(message: types.Message):
                         )
 
 
-@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=[keyboards.MainMenu.show_adm_menu]))
+@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=[keyboards.MainMenu.show_adm_menu.value.cb]))
 async def show_adm_menu(query: types.CallbackQuery):
     if await is_admin.check(query):
         await app.bot.send_message(chat_id=query.from_user.id,

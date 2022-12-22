@@ -37,7 +37,7 @@ async def publish_task_for_review(message: types.Message):
                             )
 
 
-@dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuOnReview.take))
+@dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuOnReview.take.value.cb))
 async def take_task_on_review_cb(query: types.CallbackQuery):
     await query.answer()
     task_id = task_view.get_id_from_view_text(message=query.message.text)
@@ -63,7 +63,7 @@ async def take_task_on_review_cb(query: types.CallbackQuery):
     )
 
 
-@dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuFinalReview.submitted))
+@dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuFinalReview.submitted.value.cb))
 async def submit_reviewed_task_cb(query: types.CallbackQuery):
     await query.answer()
     task_id = task_view.get_id_from_view_text(message=query.message.text)
@@ -84,7 +84,7 @@ async def submit_reviewed_task_cb(query: types.CallbackQuery):
         await show_error_msg_for_n_seconds(obj=query, error_msg=Locale.Error.UNABLE_TO_SUBMIT_TASK_BY_ANY_USER)
 
 
-@dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuReviewFinished.confirmed))
+@dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuReviewFinished.confirmed.value.cb))
 async def confirm_reviewed_task_cb(query: types.CallbackQuery):
     if await is_admin.check(obj=query):
         await query.answer()
@@ -98,7 +98,7 @@ async def confirm_reviewed_task_cb(query: types.CallbackQuery):
         await show_error_msg_for_n_seconds(obj=query, error_msg=Locale.Error.ADMIN_RIGHTS_REQUIRED)
 
 
-@dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuReviewFinished.rejected))
+@dp.callback_query_handler(callbacks.ReviewCallBack.filter(action=keyboards.TaskMenuReviewFinished.rejected.value.cb))
 async def reject_reviewed_task(query: types.CallbackQuery):
     if await is_admin.check(obj=query):
         await query.answer()
@@ -108,18 +108,18 @@ async def reject_reviewed_task(query: types.CallbackQuery):
                                           query=query,
                                           reply_markup=keyboards.get_tasks_submitted_menu(),
                                           )
-        await query.bot.send_message(chat_id=task.reviewer_id, text=f'{Locale.Task.TASK_MR_IS_REJECTED}\n'
+        await query.bot.send_message(chat_id=task.reviewer_id, text=f'{Locale.Task.TASK_MR_IS_REJECTED}\n\n'
                                                                     f'{task_view.generate_task_body(task)}')
     else:
         await show_error_msg_for_n_seconds(obj=query, error_msg=Locale.Error.ADMIN_RIGHTS_REQUIRED)
 
 
-@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.MainMenu.send_tasks_to_pm))
+@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.MainMenu.send_tasks_to_pm.value.cb))
 async def send_user_tasks_on_review_to_pm(query: types.CallbackQuery):
     await send_users_tasks_on_review_to_pm(query=query)
 
 
-@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.MainMenu.send_tasks_to_group_chat))
+@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.MainMenu.send_tasks_to_group_chat.value.cb))
 async def send_all_tasks_on_review_to_chat(query: types.CallbackQuery):
     await send_tasks_on_review_to_chat(query=query)
 
