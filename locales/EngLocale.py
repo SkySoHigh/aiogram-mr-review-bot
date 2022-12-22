@@ -1,4 +1,4 @@
-class Locale:
+class EngLocale:
     class Common:
         GREETING_MSG = f'Hello, i am QA Review Bot reminder.\n' \
                        f'For more info pls send me: /help'
