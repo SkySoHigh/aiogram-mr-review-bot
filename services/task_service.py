@@ -87,3 +87,8 @@ class TaskService:
         return self.__client.tasks.update_by(values={'reply_msg_id': reply_msg_id},
                                              id=task_id,
                                              )
+
+    def get_all_reviewer_chats_ids(self, reviewer_id: int) -> List[int]:
+        return [item for sublist in
+                self.__client.tasks.get_distinct_chats_ids_from_tasks_with_filter(reviewer_id=reviewer_id) for item in
+                sublist]
