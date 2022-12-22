@@ -32,5 +32,5 @@ def get_id_from_view_text(message: str) -> int:
         raise KeyError  # !TODO raise normal exception
 
 
-def generate_task_header(query: Union[types.Message, types.CallbackQuery]) -> str:
-    return f'{Locale.Common.CHAT_ORIGIN_MSG} {query.message.chat.title}\n\n'
+def generate_task_header(chat_title: str) -> str:
+    return f'{Locale.Common.CHAT_ORIGIN_MSG} {chat_title}\n\n'

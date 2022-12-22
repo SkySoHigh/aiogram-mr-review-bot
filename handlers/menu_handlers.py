@@ -11,13 +11,19 @@ from locales import Locale
 
 @dp.message_handler(commands.CommandMenu())
 async def show_main_menu(message: types.Message):
-    await message.reply(text=Locale.Menu.MENU_HEADER,
-                        reply_markup=keyboards.get_main_menu(),
-                        disable_notification=True,
-                        )
+    if message.from_user.id == message.chat.id:
+        await message.reply(text=Locale.Menu.MENU_HEADER,
+                            reply_markup=keyboards.get_main_menu_for_pm(),
+                            disable_notification=True,
+                            )
+    else:
+        await message.reply(text=Locale.Menu.MENU_HEADER,
+                            reply_markup=keyboards.get_main_menu_for_group(),
+                            disable_notification=True,
+                            )
 
 
-@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=[keyboards.MainMenu.show_adm_menu.value.cb]))
+@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=[keyboards.GroupMainMenu.show_adm_menu.value.cb]))
 async def show_adm_menu(query: types.CallbackQuery):
     if await is_admin.check(query):
         await app.bot.send_message(chat_id=query.from_user.id,

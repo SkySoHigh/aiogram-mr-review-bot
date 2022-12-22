@@ -12,10 +12,14 @@ class TextToCallback(BaseModel):
     cb: str
 
 
-class MainMenu(Enum):
+class GroupMainMenu(Enum):
     send_tasks_to_pm = TextToCallback(text=Locale.Menu.SHOW_USER_TASKS_BTN, cb='send_task_t_pm')
     send_tasks_to_group_chat = TextToCallback(text=Locale.Menu.SHOW_ALL_TASKS_BTN, cb='send_active_tasks_to_chat')
     show_adm_menu = TextToCallback(text=Locale.Menu.SHOW_ADM_MENU_BTN, cb='send_active_tasks_to_pm')
+
+
+class PmMainMenu(Enum):
+    get_all_user_tasks = TextToCallback(text=Locale.Menu.SHOW_USER_TASKS_BTN, cb='get_all_user_tasks')
 
 
 class TaskMenuOnReview(Enum):
@@ -52,8 +56,15 @@ def get_tasks_confirmation_menu():
     return kb
 
 
-def get_main_menu():
+def get_main_menu_for_group():
     kb = InlineKeyboardMarkup()
-    for m in MainMenu:
+    for m in GroupMainMenu:
         kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.MenuCallBack.new(m.value.cb)))
     return kb
+
+def get_main_menu_for_pm():
+    kb = InlineKeyboardMarkup()
+    for m in PmMainMenu:
+        kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.MenuCallBack.new(m.value.cb)))
+    return kb
+

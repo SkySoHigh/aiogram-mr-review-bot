@@ -15,6 +15,8 @@ class EngLocale:
         SHOW_ALL_TASKS_BTN = '🔐 show all active tasks'
         SHOW_ADM_MENU_BTN = '🔐 send menu to pm'
 
+        SHOW_ALL_MY_TASKS = '🟢 Show my active tasks'
+
     class Task:
         # General
         ID = 'Id'

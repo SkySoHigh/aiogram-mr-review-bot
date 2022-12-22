@@ -77,7 +77,7 @@ async def submit_reviewed_task_cb(query: types.CallbackQuery):
 
         for admin_id in [adm.user.id for adm in await query.bot.get_chat_administrators(chat_id=query.message.chat.id)]:
             await query.bot.send_message(chat_id=admin_id,
-                                         text=f'{task_view.generate_task_header(query)}'
+                                         text=f'{task_view.generate_task_header(query.message.chat.title)}'
                                               f'{Locale.Task.TASK_IS_READY_FOR_FINAL_REVIEW}\n\n'
                                               f'{task_view.generate_task_body(task)}')
     else:
@@ -114,51 +114,67 @@ async def reject_reviewed_task(query: types.CallbackQuery):
         await show_error_msg_for_n_seconds(obj=query, error_msg=Locale.Error.ADMIN_RIGHTS_REQUIRED)
 
 
-@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.MainMenu.send_tasks_to_pm.value.cb))
-async def send_user_tasks_on_review_to_pm(query: types.CallbackQuery):
+@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.GroupMainMenu.send_tasks_to_pm.value.cb))
+async def send_user_tasks_on_review_from_chat_to_pm(query: types.CallbackQuery):
     await send_users_tasks_on_review_to_pm(query=query)
 
 
-@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.MainMenu.send_tasks_to_group_chat.value.cb))
-async def send_all_tasks_on_review_to_chat(query: types.CallbackQuery):
-    await send_tasks_on_review_to_chat(query=query)
+@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.GroupMainMenu.send_tasks_to_group_chat.value.cb))
+async def send_all_tasks_on_review_from_chat_to_chat(query: types.CallbackQuery):
+    await send_chat_users_tasks_on_review_to_chat(query=query)
 
 
-async def send_users_tasks_on_review_to_pm(query: types.CallbackQuery, ):
-    tasks = app.task_service.get_all_tasks_on_review(chat_id=query.message.chat.id, reviewer_id=query.from_user.id)
-
-    if not tasks:
-        await query.bot.send_message(chat_id=query.from_user.id,
-                                     text=f'{task_view.generate_task_header(query)}'
-                                          f'{Locale.Task.NO_TASKS_MSG}')
-        return
-
-    sent_tasks = 0
-    for t in tasks:
-        if sent_tasks == app.config.common.task_limit:
-            tasks_count = app.task_service.count_tasks_on_review(query.message.chat.id)
-            await query.bot.send_message(text=f'{Locale.Error.TO_MANY_UNFINISHED_TASKS}: {tasks_count}\n'
-                                              f'{Locale.Task.TASK_LIMIT_IS}: {app.config.common.task_limit}',
-                                         chat_id=t.reviewer_id,
-                                         disable_notification=True)
-            break
-
-        await query.bot.send_message(
-            text=f'{task_view.generate_task_header(query)}'
-                 f'{task_view.generate_task_body(t)}',
-            chat_id=t.reviewer_id,
-            disable_web_page_preview=True,
-        )
-        sent_tasks += 1
+@dp.callback_query_handler(callbacks.MenuCallBack.filter(action=keyboards.PmMainMenu.get_all_user_tasks.value.cb))
+async def send_all_tasks_on_review_from_all_chats_to_pm(query: types.CallbackQuery):
+    await send_users_tasks_on_review_to_pm(query=query, from_all_chats=True)
 
 
-async def send_tasks_on_review_to_chat(query: types.CallbackQuery):
+async def send_users_tasks_on_review_to_pm(query: types.CallbackQuery, from_all_chats: bool = False):
+    chats = []
+    if from_all_chats is False:
+        chats.append(query.message.chat.id)
+    else:
+        chats.extend(app.task_service.get_all_reviewer_chats_ids(query.from_user.id))
+
+    for chat_id in chats:
+        tasks = app.task_service.get_all_tasks_on_review(chat_id=chat_id, reviewer_id=query.from_user.id)
+
+        if not tasks:
+            await query.bot.send_message(chat_id=query.from_user.id,
+                                         text=f'{task_view.generate_task_header(query.message.chat.title)}'
+                                              f'{Locale.Task.NO_TASKS_MSG}')
+            return
+
+        sent_tasks = 0
+        chat = await query.bot.get_chat(chat_id)
+        chat_title = '-' if not chat.title else chat.title
+
+        for t in tasks:
+            if sent_tasks == app.config.common.task_limit:
+                tasks_count = app.task_service.count_tasks_on_review(chat_id=chat_id)
+                await query.bot.send_message(text=f'{task_view.generate_task_header(chat_title)}\n'
+                                                  f'{Locale.Error.TO_MANY_UNFINISHED_TASKS}: {tasks_count}\n'
+                                                  f'{Locale.Task.TASK_LIMIT_IS}: {app.config.common.task_limit}',
+                                             chat_id=query.from_user.id,
+                                             disable_notification=True)
+                break
+
+            await query.bot.send_message(
+                text=f'{task_view.generate_task_header(chat_title)}\n'
+                     f'{task_view.generate_task_body(t)}',
+                chat_id=query.from_user.id,
+                disable_web_page_preview=True,
+            )
+            sent_tasks += 1
+
+
+async def send_chat_users_tasks_on_review_to_chat(query: types.CallbackQuery):
     if await is_admin.check(query):
         tasks = app.task_service.get_all_tasks_on_review(chat_id=query.message.chat.id)
 
         if not tasks:
             await query.bot.send_message(chat_id=query.message.chat.id,
-                                         text=f'{task_view.generate_task_header(query)}'
+                                         text=f'{task_view.generate_task_header(query.message.chat.title)}'
                                               f'{Locale.Task.NO_TASKS_MSG}')
             return
 
@@ -174,7 +190,7 @@ async def send_tasks_on_review_to_chat(query: types.CallbackQuery):
                 break
 
             msg = await query.bot.send_message(
-                text=f'{task_view.generate_task_header(query)}'
+                text=f'{task_view.generate_task_header(query.message.chat.title)}'
                      f'{task_view.generate_task_body(t)}',
                 chat_id=t.chat_id,
                 reply_markup=keyboards.get_tasks_confirmation_menu() if t.submitted_to_final_review_at
