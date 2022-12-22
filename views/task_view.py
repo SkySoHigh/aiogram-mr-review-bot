@@ -22,7 +22,7 @@ def generate_task_body(task_model: TasksModel) -> str:
            f'{Locale.Task.SUBMITTED_TO_FINAL_REVIEW}: {pprint_datetime(task_model.submitted_to_final_review_at)}\n' \
            f'\n' \
            f'{Locale.Task.COMPLETED_AT}: {pprint_datetime(task_model.completed_at)}\n' \
-           f'{Locale.Task.COMPLETED_BY}: {task_model.final_reviewer_name}'
+           f'{Locale.Task.COMPLETED_BY}: @{task_model.final_reviewer_name}'
 
 
 def get_id_from_view_text(message: str) -> int:
