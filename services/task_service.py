@@ -24,33 +24,38 @@ class TaskService:
         return task.id
 
     def set_task_reviewer(self, task_id: int, reviewer_id: int, reviewer_name: str,
-                          taken_on_review_at: datetime.datetime, reply_msg_id: int) -> None:
-        return self.__client.tasks.update_by(values={'reviewer_id': reviewer_id,
-                                                     'reviewer_name': reviewer_name,
-                                                     'status': TaskStates.ON_REVIEW,
-                                                     'taken_on_review_at': taken_on_review_at,
-                                                     'reply_msg_id': reply_msg_id,
-                                                     },
-                                             id=task_id)
+                          taken_on_review_at: datetime.datetime, reply_msg_id: int) -> TasksModel:
+        self.__client.tasks.update_by(values={'reviewer_id': reviewer_id,
+                                              'reviewer_name': reviewer_name,
+                                              'status': TaskStates.ON_REVIEW,
+                                              'taken_on_review_at': taken_on_review_at,
+                                              'reply_msg_id': reply_msg_id,
+                                              },
+                                      id=task_id)
+        return self.get_task_by_id(task_id=task_id)
 
-    def submit_task_to_final_review(self, task_id: int, submitted_to_final_review_at: datetime.datetime):
-        return self.__client.tasks.update_by(values={'submitted_to_final_review_at': submitted_to_final_review_at,
-                                                     'status': TaskStates.FINAL_REVIEW_REQUIRED,
-                                                     },
-                                             id=task_id)
+    def submit_task_to_final_review(self, task_id: int, submitted_to_final_review_at: datetime.datetime) -> TasksModel:
+        self.__client.tasks.update_by(values={'submitted_to_final_review_at': submitted_to_final_review_at,
+                                              'status': TaskStates.FINAL_REVIEW_REQUIRED,
+                                              },
+                                      id=task_id)
+        return self.get_task_by_id(task_id=task_id)
 
-    def complete_task_review(self, task_id: int, final_reviewer_name: str, completed_at: datetime.datetime):
-        return self.__client.tasks.update_by(values={'final_reviewer_name': final_reviewer_name,
-                                                     'completed_at': completed_at,
-                                                     'status': TaskStates.COMPLETED,
-                                                     },
-                                             id=task_id)
+    def complete_task_review(self, task_id: int, final_reviewer_name: str,
+                             completed_at: datetime.datetime) -> TasksModel:
+        self.__client.tasks.update_by(values={'final_reviewer_name': final_reviewer_name,
+                                              'completed_at': completed_at,
+                                              'status': TaskStates.COMPLETED,
+                                              },
+                                      id=task_id)
+        return self.get_task_by_id(task_id=task_id)
 
-    def reject_task_review(self, task_id: int):
-        return self.__client.tasks.update_by(values={'submitted_to_final_review_at': None,
-                                                     'status': TaskStates.ON_REVIEW,
-                                                     },
-                                             id=task_id)
+    def reject_task_review(self, task_id: int) -> TasksModel:
+        self.__client.tasks.update_by(values={'submitted_to_final_review_at': None,
+                                              'status': TaskStates.ON_REVIEW,
+                                              },
+                                      id=task_id)
+        return self.get_task_by_id(task_id=task_id)
 
     def get_task_by_id(self, task_id) -> TasksModel:
         return self.__client.tasks.read_by(id=task_id)[0]
