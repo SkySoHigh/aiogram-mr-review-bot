@@ -47,16 +47,21 @@ class Locale:
         CONFIRMED_BTN = '[Admin] Confirm'
         REJECT_BTN = '[Admin] Reject'
 
+        # Notify
+        TASK_MR_IS_REJECTED = 'Review rejected'
+        TASK_IS_READY_FOR_FINAL_REVIEW = 'Task is ready for final review'
+
         # Other
         NO_TASKS_MSG = 'There is no tasks on review!'
         TASK_LIMIT_IS = 'Task query limit per time is'
 
     class Error:
-        UNABLE_TO_INITIALIZE_CHAT = 'Bot can\'t initiate conversation with a user. Please, add me firs.'
+        UNABLE_TO_INITIALIZE_CHAT = 'Bot can\'t initiate conversation with a user. Please, add me first.'
         INCORRECT_REVIEW_SUBMIT_COMMAND = 'Incorrect command.\n' \
                                           'Pls, send me review command with link to MR separated by whitespace.\n' \
                                           'More info: /help'
         UNABLE_TO_SUBMIT_TASK_BY_ANY_USER = 'Forbidden. Only reviewer or admin could submit task to final review.'
+        UNABLE_TO_SELF_REVIEW = 'Forbidden. You can\'t review yourself'
         ADMIN_RIGHTS_REQUIRED = 'Forbidden. Admins rights required'
 
         CONTACT_ADMINISTRATOR = 'Please, contact administrator.'
