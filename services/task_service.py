@@ -34,6 +34,17 @@ class TaskService:
                                       id=task_id)
         return self.get_task_by_id(task_id=task_id)
 
+    def reject_task_review(self, task_id: int, rejected_from_final_review_at: datetime.datetime) -> TasksModel:
+        self.__client.tasks.update_by(values={'status': TaskStates.FIX_REQUIRED,
+                                              'rejected_from_final_review_at': rejected_from_final_review_at},
+                                      id=task_id)
+        return self.get_task_by_id(task_id=task_id)
+
+    def resubmit_task_to_review_after_fix(self, task_id: int) -> TasksModel:
+        self.__client.tasks.update_by(values={'status': TaskStates.REVIEW_AFTER_FIX},
+                                      id=task_id)
+        return self.get_task_by_id(task_id=task_id)
+
     def submit_task_to_final_review(self, task_id: int, submitted_to_final_review_at: datetime.datetime) -> TasksModel:
         self.__client.tasks.update_by(values={'submitted_to_final_review_at': submitted_to_final_review_at,
                                               'status': TaskStates.FINAL_REVIEW_REQUIRED,
@@ -41,18 +52,19 @@ class TaskService:
                                       id=task_id)
         return self.get_task_by_id(task_id=task_id)
 
-    def complete_task_review(self, task_id: int, final_reviewer_name: str,
-                             completed_at: datetime.datetime) -> TasksModel:
+    def accept_final_task_review(self, task_id: int, final_reviewer_name: str,
+                                 completed_at: datetime.datetime) -> TasksModel:
         self.__client.tasks.update_by(values={'final_reviewer_name': final_reviewer_name,
                                               'completed_at': completed_at,
-                                              'status': TaskStates.COMPLETED,
+                                              'status': TaskStates.VERIFIED,
                                               },
                                       id=task_id)
         return self.get_task_by_id(task_id=task_id)
 
-    def reject_task_review(self, task_id: int) -> TasksModel:
+    def reject_final_task_review(self, task_id: int, rejected_from_final_review_at: datetime.datetime) -> TasksModel:
         self.__client.tasks.update_by(values={'submitted_to_final_review_at': None,
-                                              'status': TaskStates.ON_REVIEW,
+                                              'rejected_from_final_review_at': rejected_from_final_review_at,
+                                              'status': TaskStates.FIX_REQUIRED,
                                               },
                                       id=task_id)
         return self.get_task_by_id(task_id=task_id)
@@ -64,24 +76,28 @@ class TaskService:
         return self.__client.tasks.read_by(status=TaskStates.NEW, chat_id=chat_id)
 
     def get_all_tasks_on_review(self, chat_id: int, reviewer_id: int = None) -> List[TasksModel]:
+        statuses = [TaskStates.NEW, TaskStates.ON_REVIEW, TaskStates.FIX_REQUIRED, TaskStates.FINAL_REVIEW_REQUIRED]
         if reviewer_id:
-            return self.__client.tasks.read_by_status_with_filter(
-                status=[TaskStates.ON_REVIEW, TaskStates.FINAL_REVIEW_REQUIRED], reviewer_id=reviewer_id,
-                chat_id=chat_id)
+            return self.__client.tasks.read_by_status_with_filter(status=statuses,
+                                                                  reviewer_id=reviewer_id,
+                                                                  chat_id=chat_id,
+                                                                  )
         else:
-            return self.__client.tasks.read_by_status_with_filter(status=[TaskStates.ON_REVIEW,
-                                                                          TaskStates.FINAL_REVIEW_REQUIRED],
-                                                                  chat_id=chat_id)
+            return self.__client.tasks.read_by_status_with_filter(status=statuses,
+                                                                  chat_id=chat_id,
+                                                                  )
 
     def count_tasks_on_review(self, chat_id: int, reviewer_id: int = None) -> int:
+        statuses = [TaskStates.NEW, TaskStates.ON_REVIEW, TaskStates.FIX_REQUIRED, TaskStates.FINAL_REVIEW_REQUIRED]
         if reviewer_id:
             return self.__client.tasks.get_count_by_status_with_filter(
-                status=[TaskStates.ON_REVIEW, TaskStates.FINAL_REVIEW_REQUIRED], reviewer_id=reviewer_id,
+                status=statuses,
+                reviewer_id=reviewer_id,
                 chat_id=chat_id)
         else:
-            return self.__client.tasks.get_count_by_status_with_filter(status=[TaskStates.ON_REVIEW,
-                                                                               TaskStates.FINAL_REVIEW_REQUIRED],
-                                                                       chat_id=chat_id)
+            return self.__client.tasks.get_count_by_status_with_filter(status=statuses,
+                                                                       chat_id=chat_id,
+                                                                       )
 
     def set_reply_msg_id(self, task_id: int, reply_msg_id: int):
         return self.__client.tasks.update_by(values={'reply_msg_id': reply_msg_id},

@@ -30,4 +30,5 @@ class TasksController(BaseDBController[TasksModel]):
 
     def get_distinct_chats_ids_from_tasks_with_filter(self, **filter_kwargs) -> List[tuple]:
         with self.transport() as session:
+            a = session.query(self.model.chat_id).filter_by(**filter_kwargs).distinct().all()
             return session.query(self.model.chat_id).filter_by(**filter_kwargs).distinct().all()
