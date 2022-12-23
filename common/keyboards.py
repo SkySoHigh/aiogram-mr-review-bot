@@ -4,6 +4,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pydantic import BaseModel
 
 from common import callbacks
+from db.models import TaskStates
 from locales import Locale
 
 
@@ -19,39 +20,44 @@ class GroupMainMenu(Enum):
 
 
 class PmMainMenu(Enum):
-    get_all_user_tasks = TextToCallback(text=Locale.Menu.SHOW_USER_TASKS_BTN, cb='get_all_user_tasks')
+    get_all_user_tasks = TextToCallback(text=Locale.Menu.SHOW_ALL_MY_TASKS, cb='get_all_user_tasks')
 
 
 class TaskMenuOnReview(Enum):
     take = TextToCallback(text=Locale.Task.TAKE_BTN, cb='take_task')
 
 
-class TaskMenuFinalReview(Enum):
+class TaskMenuReview(Enum):
     submitted = TextToCallback(text=Locale.Task.SUBMIT_BTN, cb='submit_task')
+    rejected = TextToCallback(text=Locale.Task.REJECT_BTN, cb='rejected')
 
 
-class TaskMenuReviewFinished(Enum):
-    confirmed = TextToCallback(text=Locale.Task.CONFIRMED_BTN, cb='confirm_task')
-    rejected = TextToCallback(text=Locale.Task.REJECT_BTN, cb='reject_task')
+class TaskMenuFinalReview(Enum):
+    confirmed = TextToCallback(text=Locale.Task.FINAL_CONFIRM_BTN, cb='final_confirm_task')
+    rejected = TextToCallback(text=Locale.Task.FINAL_REJECT_BTN, cb='final_reject_task')
 
 
-def get_tasks_on_review_menu():
+class TaskMenuFix(Enum):
+    fixed = TextToCallback(text=Locale.Task.RESUBMIT_BTN, cb='re_submit_task')
+
+
+def get_new_task_menu():
     kb = InlineKeyboardMarkup()
     for m in TaskMenuOnReview:
         kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.ReviewCallBack.new(m.value.cb)))
     return kb
 
 
-def get_tasks_submitted_menu():
+def get_review_task_menu():
     kb = InlineKeyboardMarkup()
-    for m in TaskMenuFinalReview:
+    for m in TaskMenuReview:
         kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.ReviewCallBack.new(m.value.cb)))
     return kb
 
 
-def get_tasks_confirmation_menu():
+def get_final_tasks_menu():
     kb = InlineKeyboardMarkup()
-    for m in TaskMenuReviewFinished:
+    for m in TaskMenuFinalReview:
         kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.ReviewCallBack.new(m.value.cb)))
     return kb
 
@@ -62,9 +68,24 @@ def get_main_menu_for_group():
         kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.MenuCallBack.new(m.value.cb)))
     return kb
 
+
 def get_main_menu_for_pm():
     kb = InlineKeyboardMarkup()
     for m in PmMainMenu:
         kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.MenuCallBack.new(m.value.cb)))
     return kb
 
+
+def get_task_resubmit_menu():
+    kb = InlineKeyboardMarkup()
+    for m in TaskMenuFix:
+        kb.add(InlineKeyboardButton(text=m.value.text, callback_data=callbacks.ReviewCallBack.new(m.value.cb)))
+    return kb
+
+
+def states_to_keyboards(state: TaskStates) -> InlineKeyboardMarkup:
+    return {state.NEW: get_new_task_menu,
+            state.ON_REVIEW: get_review_task_menu,
+            state.FIX_REQUIRED: get_task_resubmit_menu,
+            state.FINAL_REVIEW_REQUIRED: get_final_tasks_menu
+            }.get(state)()
