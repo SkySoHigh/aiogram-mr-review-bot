@@ -9,8 +9,10 @@ from db.models.base import Base
 class TaskStates(enum.Enum):
     NEW = 0
     ON_REVIEW = 1
-    FINAL_REVIEW_REQUIRED = 2
-    COMPLETED = 3
+    FIX_REQUIRED = 2
+    REVIEW_AFTER_FIX = 3
+    FINAL_REVIEW_REQUIRED = 4
+    VERIFIED = 5
 
 
 class TasksModel(Base):
@@ -27,7 +29,9 @@ class TasksModel(Base):
     reviewer_id = Column(Integer, nullable=True)
     reviewer_name = Column(String, nullable=True)
     taken_on_review_at = Column(DateTime(timezone=True), nullable=True)
+
     submitted_to_final_review_at = Column(DateTime(timezone=True), nullable=True)
+    rejected_from_final_review_at = Column(DateTime(timezone=True), nullable=True)
 
     completed_at = Column(DateTime(timezone=True), nullable=True)
     final_reviewer_name = Column(String, nullable=True)
