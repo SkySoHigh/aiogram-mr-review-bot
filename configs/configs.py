@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List
 
 from pydantic import BaseSettings, SecretStr, Field, BaseModel
@@ -6,8 +7,10 @@ from pydantic import BaseSettings, SecretStr, Field, BaseModel
 class CommonConfig(BaseSettings):
     token: SecretStr = Field(..., env="token")
     admins: List[int] = Field(..., env="admins")
-    log_cfg_path: str = Field("", env="log_cfg_path")
-    task_limit: int = Field(5, env='task_limit')
+    log_cfg_path: str = Field(
+        f"{Path(__file__).parent}/logging.json", env="log_cfg_path"
+    )
+    task_limit: int = Field(5, env="task_limit")
 
     class Config:
         case_sentive = False
