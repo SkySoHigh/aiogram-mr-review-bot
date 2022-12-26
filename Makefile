@@ -50,7 +50,7 @@ docker_clean:
 	docker rm ${CONTAINER_NAME} && docker rmi ${IMAGE_NAME}
 
 docker_run:
-	docker run -it -d --name ${CONTAINER_NAME} ${IMAGE_NAME}
+	docker run -it -d -v $(shell pwd)/data:/${PROJECT}/data -v $(shell pwd)/logs:/${PROJECT}/logs --name ${CONTAINER_NAME} ${IMAGE_NAME}
 
 docker_stop:
 	docker stop ${CONTAINER_NAME}

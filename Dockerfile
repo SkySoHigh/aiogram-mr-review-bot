@@ -11,4 +11,7 @@ RUN set +x \
  && apt upgrade -y \
  && pip3 install -r requirements.txt
 
+VOLUME data
+VOLUME logs
+
 CMD ["python3", "run.py"]
