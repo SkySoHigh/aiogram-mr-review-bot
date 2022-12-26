@@ -4,9 +4,9 @@ from aiogram.utils import executor
 
 from common import commands
 from configs.configs import ConfigProvider
+from loader.initializer import Loader
 from locales.RuLocale import RuLocale
 from utils import logger
-from loader.initializer import Loader
 
 __all__ = ["app", "dp", "bot", "run", "Locale"]
 
