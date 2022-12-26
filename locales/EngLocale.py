@@ -35,7 +35,8 @@ class EngLocale:
         TAKEN_TO_REVIEW_AT = "Taken to review at"
 
         # When on review
-        SUBMITTED_TO_FINAL_REVIEW = "Submitted to confirm:"
+        SUBMITTED_TO_FINAL_REVIEW = "Submitted to confirm"
+        REJECTED_AT = "Rejected at"
 
         # When completed
         COMPLETED_AT = "Completed at"
@@ -46,15 +47,19 @@ class EngLocale:
         TAKE_BTN = "🔬 Take"
 
         # \- When on review
-        SUBMIT_BTN = "👀 Submit"
+        SUBMIT_BTN = "✅ Submit to final review 👀"
+        REJECT_BTN = "❌ Reject"
+        RESUBMIT_BTN = " ⚙️ Submit to review again"
 
         # \- When completed
-        CONFIRMED_BTN = "🔐 Confirm ✅"
-        REJECT_BTN = "🔐 Reject ❌"
+        FINAL_CONFIRM_BTN = "🔐 Confirm ✅"
+        FINAL_REJECT_BTN = "🔐 Reject ❌"
 
         # Notify
         TASK_MR_IS_REJECTED = "Review rejected 🙈 💩 🧻"
         TASK_IS_READY_FOR_FINAL_REVIEW = "🦾 Task is ready for final review 🧐"
+        TASK_FIX_REQUIRED = "🔥🔥🔥 🛠 Fix required 🔥🔥🔥"
+        TASK_IS_READY_REVIEW_AFTER_FIX = "🛠 Review after fix is required"
 
         # Other
         NO_TASKS_MSG = "There is no tasks on review! 😎 🎉"
@@ -72,6 +77,17 @@ class EngLocale:
         UNABLE_TO_SUBMIT_TASK_BY_ANY_USER = (
             "⛔️ Forbidden. Only reviewer or admin could submit task to final review."
         )
+
+        UNABLE_TO_PASS_TASK_TO_REVIEW_BY_ANY_USER = (
+            "⛔️ Forbidden. Only reviewer or admin could submit task to final review."
+        )
+        UNABLE_TO_REJECT_TASK_FROM_FINAL_REVIEW_BY_ANY_USER = (
+            "⛔️ Forbidden. Only reviewer or admin could reject task from review."
+        )
+        UNABLE_TO_RESUBMIT_TASK_TO_REVIEW_BY_ANY_USER = (
+            "⛔️ Forbidden. Only publisher or admin could resubmit task."
+        )
+
         UNABLE_TO_SELF_REVIEW = "⛔️ Forbidden. You can't review yourself 🗿"
         ADMIN_RIGHTS_REQUIRED = "⛔️ Forbidden. Admins rights required"
 
