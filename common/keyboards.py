@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 from common import callbacks
 from db.models import TaskStates
-from locales import Locale
+from loader import Locale
 
 
 class TextToCallback(BaseModel):

@@ -3,13 +3,14 @@ from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 
 from common import commands
-from configs import ConfigProvider
+from configs.configs import ConfigProvider
+from locales.RuLocale import RuLocale
 from utils import logger
+from loader.initializer import Loader
 
-from .loader import Loader
+__all__ = ["app", "dp", "bot", "run", "Locale"]
 
-__all__ = ["app", "dp", "bot", "run"]
-
+Locale = RuLocale
 
 config = ConfigProvider()
 bot = Bot(token=config.common.token.get_secret_value())
@@ -34,7 +35,7 @@ async def on_startup(dp: Dispatcher):
     await commands.set_default_commands(dp)
 
     # noinspection PyUnresolvedReferences
-    import handlers
+    import handlers  # noqa
 
 
 async def on_shutdown(dp: Dispatcher):

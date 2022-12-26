@@ -1,7 +1,6 @@
 import re
 
-from locales import Locale
-
+from loader import Locale
 
 def generate_link_to_msg(chat_id: int, msg_id: int) -> str:
     shift = -1_000_000_000_000

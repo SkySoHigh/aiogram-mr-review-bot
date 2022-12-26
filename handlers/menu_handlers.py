@@ -3,8 +3,7 @@ from aiogram import types
 from common import callbacks, commands, keyboards
 from filters import is_admin
 from handlers.error_handlers import show_error_msg_for_n_seconds
-from loader import app, dp
-from locales import Locale
+from loader import Locale, app, dp
 
 
 @dp.message_handler(commands.CommandMenu())

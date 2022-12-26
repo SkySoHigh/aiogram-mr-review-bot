@@ -1,8 +1,7 @@
 from aiogram import types
 from aiogram.dispatcher.filters import CommandHelp, CommandStart
 
-from loader import dp
-from locales import Locale
+from loader import Locale, dp
 
 
 @dp.message_handler(CommandStart())

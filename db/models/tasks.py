@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import enum
 
-from sqlalchemy import Column, DateTime, Enum, Integer, Sequence, String, func
+from sqlalchemy import Column, DateTime, Enum, Integer, Sequence, String
 
 from db.models.base import Base
 

@@ -9,8 +9,7 @@ from aiogram.utils.exceptions import (
     TelegramAPIError,
 )
 
-from loader import dp
-from locales import Locale
+from loader import Locale, dp
 
 
 @dp.errors_handler()

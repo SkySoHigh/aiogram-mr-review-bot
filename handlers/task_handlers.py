@@ -6,8 +6,7 @@ from common import callbacks, commands, keyboards
 from db import TasksModel
 from filters import is_admin
 from handlers import error_handlers
-from loader import app, dp
-from locales import Locale
+from loader import Locale, app, dp
 from utils import common_helpers, date_helpers
 from views import task_view
 

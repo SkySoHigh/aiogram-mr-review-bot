@@ -1,10 +1,10 @@
 from aiogram import Bot, Dispatcher
 
-from configs import ConfigProvider
+from configs.configs import ConfigProvider
 from db.client import DBClient
 from db.models.base import Base
 from db.transport import DbTransport
-from services import TaskService
+from services.task_service import TaskService
 
 
 class Loader:

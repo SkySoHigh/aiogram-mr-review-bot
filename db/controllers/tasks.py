@@ -2,8 +2,8 @@ from typing import List, Union
 
 from sqlalchemy import func
 
-from db.controllers import BaseDBController
-from db.models import TasksModel, TaskStates
+from db.controllers.base import BaseDBController
+from db.models.tasks import TasksModel, TaskStates
 
 
 class TasksController(BaseDBController[TasksModel]):
