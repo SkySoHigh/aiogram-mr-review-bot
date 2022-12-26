@@ -12,16 +12,6 @@ class CommandPublishReview(Command):
         super().__init__(["review"])
 
 
-class CommandSetReminder(Command):
-    def __init__(self):
-        super().__init__(["set_reminder"])
-
-
-class CommandUnSetReminder(Command):
-    def __init__(self):
-        super().__init__(["unset_reminder"])
-
-
 async def set_default_commands(dp: Dispatcher) -> None:
     await dp.bot.set_my_commands(
         [
