@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 
-from pydantic import BaseSettings, SecretStr, Field, BaseModel
+from pydantic import BaseModel, BaseSettings, Field, SecretStr
 
 
 class CommonConfig(BaseSettings):
@@ -14,8 +14,8 @@ class CommonConfig(BaseSettings):
 
     class Config:
         case_sentive = False
-        env_file = '.env'
-        env_file_encoding = 'utf-8'
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
 
 class DbConfig(BaseSettings):
@@ -24,7 +24,7 @@ class DbConfig(BaseSettings):
     password: SecretStr = Field(..., env="password")
     host: str = Field(..., env="host")
     port: int = Field(..., env="port")
-    sid: str = Field('', env="sid")
+    sid: str = Field("", env="sid")
 
     dsn: str = Field(None, env="dsn")
 
@@ -33,8 +33,8 @@ class DbConfig(BaseSettings):
 
     class Config:
         case_sentive = False
-        env_file = '.env'
-        env_file_encoding = 'utf-8'
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
 
 class ConfigProvider(BaseModel):

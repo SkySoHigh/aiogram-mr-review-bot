@@ -1,5 +1,5 @@
 import datetime
-from typing import  Optional
+from typing import Optional
 
 
 def get_current_datetime() -> datetime.datetime:

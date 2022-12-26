@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from typing import List, Type, Generator, TypeVar, Generic, NoReturn
+from typing import Generator, Generic, List, NoReturn, Type, TypeVar
 
 from db.models.base import Base
 from db.transport import DbTransport
@@ -39,7 +39,12 @@ class BaseDBController(Generic[DB_MODEL_TYPE]):
             session.refresh(entity)
             session.expunge(entity)
 
-    def read_by(self, *, limit: int = 1000, **filter_kwargs, ) -> List[DB_MODEL_TYPE]:
+    def read_by(
+        self,
+        *,
+        limit: int = 1000,
+        **filter_kwargs,
+    ) -> List[DB_MODEL_TYPE]:
         """
         Reads model based objects from the database with provided filter_kwargs.
 
@@ -52,9 +57,13 @@ class BaseDBController(Generic[DB_MODEL_TYPE]):
 
         """
         with self.transport() as session:
-            return session.query(self.model).filter_by(**filter_kwargs).limit(limit).all()
+            return (
+                session.query(self.model).filter_by(**filter_kwargs).limit(limit).all()
+            )
 
-    def read_in_batches(self, *, batch_size: int = 100, **filter_kwargs) -> Generator[DB_MODEL_TYPE, None, None]:
+    def read_in_batches(
+        self, *, batch_size: int = 100, **filter_kwargs
+    ) -> Generator[DB_MODEL_TYPE, None, None]:
         """
         Reads model based objects from the database as Generator.
 
@@ -66,7 +75,11 @@ class BaseDBController(Generic[DB_MODEL_TYPE]):
         Returns: Generator with model based database objects
         """
         with self.transport() as session:
-            for r in session.query(self.model).filter_by(**filter_kwargs).yield_per(batch_size):
+            for r in (
+                session.query(self.model)
+                .filter_by(**filter_kwargs)
+                .yield_per(batch_size)
+            ):
                 yield r
 
     def update_by(self, values: dict, **where) -> NoReturn:

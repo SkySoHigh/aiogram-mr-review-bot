@@ -1,5 +1,2 @@
-from . import common_handlers
-from . import error_handlers
-from . import menu_handlers
-from . import notifier_handler
-from . import task_handlers
+"""Contains all bot message handlers (bot's logic)."""
+from . import common_handlers, error_handlers, menu_handlers, task_handlers

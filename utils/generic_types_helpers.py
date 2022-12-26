@@ -21,7 +21,7 @@ def get_generic_type_arg(cls) -> Tuple[Any]:
     Returns: type of arg passed to the typing.Generic
     """
 
-    t = getattr(cls, '__orig_bases__', None)[0]
+    t = getattr(cls, "__orig_bases__", None)[0]
     if not t:
-        raise KeyError(f'There is no __orig_bases__ in {cls}')
+        raise KeyError(f"There is no __orig_bases__ in {cls}")
     return get_args(t)

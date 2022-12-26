@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union, List
+from typing import List, Union
 
 from aiogram import types
 from aiogram.dispatcher.filters import BoundFilter
@@ -7,8 +7,8 @@ from aiogram.types import ChatType
 
 from loader import app
 
-
 # TODO: There is a bug, when filter check is called for every usage in cb. Gonna use method instead.
+
 
 @dataclass
 class AdminFilter(BoundFilter):
@@ -21,7 +21,14 @@ class AdminFilter(BoundFilter):
 
         # If chat is private we will not be able to get admins
         if obj.message.chat.type != ChatType.PRIVATE:
-            chat_admins.extend([a.user.id for a in await obj.bot.get_chat_administrators(chat_id=obj.message.chat.id)])
+            chat_admins.extend(
+                [
+                    a.user.id
+                    for a in await obj.bot.get_chat_administrators(
+                        chat_id=obj.message.chat.id
+                    )
+                ]
+            )
         else:
             chat_admins.append(obj.from_user.id)
         if user.id in [app.config.common.admins, *chat_admins]:
@@ -30,7 +37,9 @@ class AdminFilter(BoundFilter):
             return self.is_admin is False
 
 
-async def check(obj: Union[types.Message, types.CallbackQuery], *, additional_ids: List[int] = None) -> bool:
+async def check(
+    obj: Union[types.Message, types.CallbackQuery], *, additional_ids: List[int] = None
+) -> bool:
     user = obj.from_user
     additional_ids = additional_ids if additional_ids else []
     chat_admins = []
@@ -39,7 +48,14 @@ async def check(obj: Union[types.Message, types.CallbackQuery], *, additional_id
 
     # If chat is private we will not be able to get admins
     if obj.message.chat.type != ChatType.PRIVATE:
-        chat_admins.extend([a.user.id for a in await obj.bot.get_chat_administrators(chat_id=obj.message.chat.id)])
+        chat_admins.extend(
+            [
+                a.user.id
+                for a in await obj.bot.get_chat_administrators(
+                    chat_id=obj.message.chat.id
+                )
+            ]
+        )
     else:
         chat_admins.append(obj.from_user.id)
     if user.id in [app.config.common.admins, *chat_admins]:

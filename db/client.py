@@ -1,9 +1,7 @@
 from db.controllers.tasks import TasksController
 from db.transport import DbTransport
 
-__all__ = [
-    'DBClient'
-]
+__all__ = ["DBClient"]
 
 
 class DBClient:

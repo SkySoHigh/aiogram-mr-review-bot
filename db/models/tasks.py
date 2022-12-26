@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import enum
 
-from sqlalchemy import Column, Integer, String, Sequence, DateTime, func, Enum
+from sqlalchemy import Column, DateTime, Enum, Integer, Sequence, String, func
 
 from db.models.base import Base
 
@@ -16,8 +16,8 @@ class TaskStates(enum.Enum):
 
 
 class TasksModel(Base):
-    __tablename__ = 'tasks'
-    id = Column(Integer, Sequence('id_seq'), primary_key=True)
+    __tablename__ = "tasks"
+    id = Column(Integer, Sequence("id_seq"), primary_key=True)
     url = Column(String, nullable=False, unique=False)
     status = Column(Enum(TaskStates), nullable=False, default=TaskStates.NEW)
     chat_id = Column(Integer, nullable=False)

@@ -18,8 +18,7 @@ class Repr(_Repr):
             return super(Repr, self).repr(obj)
 
     def repr_Base(self, obj, level):
-        return '<%s %s>' % (self._repr_class(obj, level),
-                            self._repr_attrs(obj, level))
+        return "<%s %s>" % (self._repr_class(obj, level), self._repr_attrs(obj, level))
 
     def _repr_class(self, obj, level):
         return obj.__class__.__name__
@@ -29,17 +28,17 @@ class Repr(_Repr):
         for attr in self._iter_attrs(obj):
             represented_attr = self._repr_attr(attr, level)
             represented_attrs.append(represented_attr)
-        return ', '.join(represented_attrs)
+        return ", ".join(represented_attrs)
 
     def _repr_attr(self, obj, level):
         attr_name, attr_value = obj
-        if hasattr(attr_value, 'isoformat'):
-            return '%s=%r' % (attr_name, attr_value.isoformat())
-        return '%s=%r' % (attr_name, attr_value)
+        if hasattr(attr_value, "isoformat"):
+            return "%s=%r" % (attr_name, attr_value.isoformat())
+        return "%s=%r" % (attr_name, attr_value)
 
     def _iter_attrs(self, obj):
-        blacklist = set(getattr(obj, '__repr_blacklist__', set()))
-        whitelist = set(getattr(obj, '__repr_whitelist__', set()))
+        blacklist = set(getattr(obj, "__repr_blacklist__", set()))
+        whitelist = set(getattr(obj, "__repr_whitelist__", set()))
 
         attr_names = inspect(obj.__class__).columns.keys()
         for attr_name in attr_names:

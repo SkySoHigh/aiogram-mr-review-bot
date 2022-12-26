@@ -1,4 +1,3 @@
-from . import EngLocale
-from . import RuLocale
+from . import EngLocale, RuLocale
 
 Locale = RuLocale.RuLocale
