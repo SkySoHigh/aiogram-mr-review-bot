@@ -3,7 +3,7 @@ from typing import Union
 from aiogram import types
 
 from common import callbacks, commands, keyboards
-from db import TasksModel
+from db.models.tasks import TasksModel
 from filters import is_admin
 from handlers import error_handlers
 from loader import Locale, app, dp

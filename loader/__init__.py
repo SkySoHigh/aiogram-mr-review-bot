@@ -34,8 +34,10 @@ async def on_startup(dp: Dispatcher):
     # Register bot commands
     await commands.set_default_commands(dp)
 
-    # noinspection PyUnresolvedReferences
-    import handlers  # noqa
+    import handlers.common_handlers  # noqa
+    import handlers.error_handlers  # noqa
+    import handlers.menu_handlers  # noqa
+    import handlers.task_handlers  # noqa
 
 
 async def on_shutdown(dp: Dispatcher):

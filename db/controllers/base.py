@@ -19,7 +19,6 @@ class BaseDBController(Generic[DB_MODEL_TYPE]):
             transport: SqlAlchemyTransport object for executing commands in the database (transport layer).
         """
         self.model = get_generic_type_arg(self)[0]
-        print(self.model)
         self.transport = transport.session_manager
 
     def create(self, entity: Type[DB_MODEL_TYPE]) -> NoReturn:

@@ -4,7 +4,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pydantic import BaseModel
 
 from common import callbacks
-from db.models import TaskStates
+from db.models.tasks import TaskStates
 from loader import Locale
 
 

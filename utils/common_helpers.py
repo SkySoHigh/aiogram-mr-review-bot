@@ -10,6 +10,6 @@ def generate_link_to_msg(chat_id: int, msg_id: int) -> str:
 
 def get_id_from_view_text(message: str) -> int:
     try:
-        return re.findall(pattern=Locale.Task.ID + r":\s(\\d+)", string=message)[0]
+        return re.findall(pattern=Locale.Task.ID + ":\s(\\d+)", string=message)[0]
     except KeyError:
         raise KeyError  # !TODO raise normal exception

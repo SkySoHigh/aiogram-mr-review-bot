@@ -1,5 +1,5 @@
 from db.models.tasks import TasksModel
-from locales import Locale
+from loader import Locale
 from utils.date_helpers import pprint_datetime
 
 
