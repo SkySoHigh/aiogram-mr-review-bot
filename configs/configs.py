@@ -26,10 +26,18 @@ class DbConfig(BaseSettings):
     port: int = Field(..., env="port")
     sid: str = Field("", env="sid")
 
-    dsn: str = Field(None, env="dsn")
+    url: str = Field(None, env="url")
 
     echo_db_queries: bool = Field(False, env="echo_db_queries")
-    echo_db_pool: bool = Field(False, env="echo_db_cp")
+    echo_db_pool: bool = Field(False, env="echo_db_pool")
+
+    @property
+    def dsn(self):
+        return (
+            f"{self.driver}://{self.user}:{self.password}@{self.host}:{self.port}/{self.sid}"
+            if self.url is None
+            else self.url
+        )
 
     class Config:
         case_sentive = False
