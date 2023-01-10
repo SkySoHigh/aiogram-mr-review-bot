@@ -7,4 +7,4 @@ def get_current_datetime() -> datetime.datetime:
 
 
 def pprint_datetime(dt: datetime.datetime) -> Optional[datetime.datetime]:
-    return dt.isoformat(sep=" ", timespec="seconds") if dt else dt
+    return dt.replace(tzinfo=None).isoformat(sep=" ", timespec="seconds") if dt else dt

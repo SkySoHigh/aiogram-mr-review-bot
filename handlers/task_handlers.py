@@ -211,9 +211,11 @@ async def reject_final_task_review(query: types.CallbackQuery):
             reply_markup=keyboards.get_review_task_menu(),
         )
         # Notify reviewer and publisher that task is rejected
-        text = f"{Locale.Task.TASK_MR_IS_REJECTED}\n\n" \
-               f"{task_view.generate_task_body(task)}\n\n" \
-               f"{common_helpers.generate_link_to_msg(chat_id=task.chat_id, msg_id=task.reply_msg_id)}\n"
+        text = (
+            f"{Locale.Task.TASK_MR_IS_REJECTED}\n\n"
+            f"{task_view.generate_task_body(task)}\n\n"
+            f"{common_helpers.generate_link_to_msg(chat_id=task.chat_id, msg_id=task.reply_msg_id)}\n"
+        )
 
         await query.bot.send_message(
             chat_id=task.reviewer_id,
