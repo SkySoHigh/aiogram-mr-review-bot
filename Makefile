@@ -62,6 +62,9 @@ docker_clean:
 docker_run:
 	docker run -it --rm -d -v $(shell pwd)/data:/${PROJECT}/data -v $(shell pwd)/logs:/${PROJECT}/logs -v $(shell pwd)/configs:/${PROJECT}/configs --name ${CONTAINER_NAME} ${IMAGE_NAME}
 
+docker_run_hm:
+	docker run -it --net=host --rm -d -v $(shell pwd)/data:/${PROJECT}/data -v $(shell pwd)/logs:/${PROJECT}/logs -v $(shell pwd)/configs:/${PROJECT}/configs --name ${CONTAINER_NAME} ${IMAGE_NAME}
+
 docker_stop:
 	docker stop ${CONTAINER_NAME}
 

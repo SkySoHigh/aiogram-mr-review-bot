@@ -9,10 +9,13 @@ WORKDIR $WORK_DIR
 RUN set +x \
  && apt update \
  && apt upgrade -y \
+ && apt install -yq tzdata \
+ && ln -fs /usr/share/zoneinfo/Europe/Moscow /etc/localtime \
+ && dpkg-reconfigure -f noninteractive tzdata \
  && pip3 install -r requirements.txt
 
 VOLUME data
 VOLUME logs
 VOLUME configs
 
-CMD ["python3", "run.py"]
+CMD exec python3 run.py >> ./logs/out.log 2>&1
