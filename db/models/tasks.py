@@ -18,7 +18,7 @@ class TaskStates(enum.Enum):
 class TasksModel(Base):
     __tablename__ = "tasks"
     id = Column(Integer, Sequence("id_seq"), primary_key=True)
-    url = Column(String, nullable=False, unique=False)
+    url = Column(String, nullable=False, unique=True)
     status = Column(Enum(TaskStates), nullable=False, default=TaskStates.NEW)
     chat_id = Column(BigInteger, nullable=False)
     publisher_msg_id = Column(BigInteger, nullable=False)
