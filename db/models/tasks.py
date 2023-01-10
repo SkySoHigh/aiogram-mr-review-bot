@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import enum
 
-from sqlalchemy import Column, DateTime, Enum, Integer, Sequence, String
+from sqlalchemy import BigInteger, Column, DateTime, Enum, Integer, Sequence, String
 
 from db.models.base import Base
 
@@ -20,13 +20,13 @@ class TasksModel(Base):
     id = Column(Integer, Sequence("id_seq"), primary_key=True)
     url = Column(String, nullable=False, unique=False)
     status = Column(Enum(TaskStates), nullable=False, default=TaskStates.NEW)
-    chat_id = Column(Integer, nullable=False)
-    publisher_msg_id = Column(Integer, nullable=False)
-    publisher_id = Column(Integer, nullable=False)
+    chat_id = Column(BigInteger, nullable=False)
+    publisher_msg_id = Column(BigInteger, nullable=False)
+    publisher_id = Column(BigInteger, nullable=False)
     publisher_name = Column(String, nullable=False)
     published_at = Column(DateTime(timezone=True), nullable=False)
-    reply_msg_id = Column(Integer, nullable=True)
-    reviewer_id = Column(Integer, nullable=True)
+    reply_msg_id = Column(BigInteger, nullable=True)
+    reviewer_id = Column(BigInteger, nullable=True)
     reviewer_name = Column(String, nullable=True)
     taken_on_review_at = Column(DateTime(timezone=True), nullable=True)
 
