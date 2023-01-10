@@ -40,14 +40,15 @@ async def errors_handler(update: types.Update, exception: TelegramAPIError):
 async def show_error_msg_for_n_seconds(
     query: Union[types.Message, types.CallbackQuery], error_msg: str, duration: int = 10
 ):
-    msg_for_removal = await query.bot.send_message(
+    msg = query.message if isinstance(query, types.CallbackQuery) else query
+    msg_for_removal = await msg.bot.send_message(
         text=f"{error_msg}\n"
         f"{Locale.Error.ERROR_MSG_WILL_BE_REMOVED_IN}: {duration}s",
-        chat_id=query.message.chat.id,
+        chat_id=msg.chat.id,
         disable_notification=True,
         disable_web_page_preview=True,
     )
     await asyncio.sleep(duration)
-    await query.bot.delete_message(
+    await msg.bot.delete_message(
         chat_id=msg_for_removal.chat.id, message_id=msg_for_removal.message_id
     )
