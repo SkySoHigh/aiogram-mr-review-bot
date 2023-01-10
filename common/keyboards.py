@@ -26,8 +26,12 @@ class GroupMainMenu(Enum):
 
 
 class PmMainMenu(Enum):
-    get_all_user_tasks = TextToCallback(
-        text=Locale.Menu.SHOW_ALL_MY_TASKS, cb="get_all_user_tasks"
+    get_all_user_tasks_for_review = TextToCallback(
+        text=Locale.Menu.SHOW_ALL_MY_TASKS_FOR_REVIEW,
+        cb="get_all_user_tasks_for_review",
+    )
+    get_all_user_tasks_on_review = TextToCallback(
+        text=Locale.Menu.SHOW_ALL_MY_TASKS_ON_REVIEW, cb="get_all_user_tasks_on_review"
     )
 
 

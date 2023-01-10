@@ -221,7 +221,7 @@ async def reject_final_task_review(query: types.CallbackQuery):
     )
 )
 async def send_user_tasks_on_review_from_this_chat_to_pm(query: types.CallbackQuery):
-    await send_users_tasks_on_review_to_pm(query=query)
+    await send_users_tasks_to_pm(query=query)
 
 
 @dp.callback_query_handler(
@@ -230,42 +230,74 @@ async def send_user_tasks_on_review_from_this_chat_to_pm(query: types.CallbackQu
     )
 )
 async def send_all_tasks_on_review_from_chat_to_chat(query: types.CallbackQuery):
-    await send_chat_users_tasks_on_review_to_chat(query=query)
+    await send_chat_users_tasks_for_review_to_chat(query=query)
 
 
 @dp.callback_query_handler(
     callbacks.MenuCallBack.filter(
-        action=keyboards.PmMainMenu.get_all_user_tasks.value.cb
+        action=keyboards.PmMainMenu.get_all_user_tasks_for_review.value.cb
     )
 )
-async def send_all_tasks_on_review_from_all_chats_to_pm(query: types.CallbackQuery):
-    await send_users_tasks_on_review_to_pm(query=query, from_all_chats=True)
-
-
-async def send_users_tasks_on_review_to_pm(
-    query: types.CallbackQuery, from_all_chats: bool = False
+async def send_all_user_tasks_for_review_from_all_chats_to_pm(
+    query: types.CallbackQuery,
 ):
+    await send_users_tasks_to_pm(query=query, from_all_chats=True)
+
+
+@dp.callback_query_handler(
+    callbacks.MenuCallBack.filter(
+        action=keyboards.PmMainMenu.get_all_user_tasks_on_review.value.cb
+    )
+)
+async def send_all_user_tasks_on_review_from_all_chats_to_pm(
+    query: types.CallbackQuery,
+):
+    await send_users_tasks_to_pm(query=query, from_all_chats=True, on_review=True)
+
+
+async def send_users_tasks_to_pm(
+    query: types.CallbackQuery,
+    from_all_chats: bool = False,
+    on_review: bool = False,
+):
+    # Msg if there is no tasks FOR or ON review
+    no_tasks_msg = Locale.Task.NO_TASKS_ON_REVIEW_MSG if on_review else Locale.Task.NO_TASKS_FOR_REVIEW_MSG
+
+    # Get all chats where user could be publisher or reviewer
     chats = []
     if from_all_chats is False:
         chats.append(query.message.chat.id)
     else:
-        chats.extend(app.task_service.get_all_reviewer_chats_ids(query.from_user.id))
+        chats.extend(app.task_service.get_chats_ids_by_user_id(query.from_user.id))
 
+    # If there is no chats - send msg
     if not chats:
         await query.bot.send_message(
             chat_id=query.from_user.id,
-            text=f'{task_view.generate_task_header("-")}' f"{Locale.Task.NO_TASKS_MSG}",
+            text=f'{task_view.generate_task_header(chat_title="-")}'
+            f"{no_tasks_msg}",
         )
 
     for chat_id in chats:
-        tasks = app.task_service.get_all_tasks_on_review(
-            chat_id=chat_id, reviewer_id=query.from_user.id
-        )
+        # If on_review is true - get all tasks, which user took on review from all chats
+        if on_review is True:
+            tasks = app.task_service.get_all_tasks_on_review(
+                chat_id=chat_id, publisher_id=query.from_user.id
+            )
+        else:
+            # If on_review is false - get all published user tasks waiting to be reviewed
+            tasks = app.task_service.get_all_tasks_for_review(
+                chat_id=chat_id, reviewer_id=query.from_user.id
+            )
+
         if not tasks:
+            chat = await query.bot.get_chat(chat_id=chat_id)
+            title = chat.title if chat.title else "-"
             await query.bot.send_message(
                 chat_id=query.from_user.id,
-                text=f"{task_view.generate_task_header(query.message.chat.title)}"
-                f"{Locale.Task.NO_TASKS_MSG}",
+                text=f"{task_view.generate_task_header(chat_title=title)}"
+                f"{no_tasks_msg}",
+                disable_notification=True,
             )
             continue
 
@@ -295,15 +327,15 @@ async def send_users_tasks_on_review_to_pm(
             sent_tasks += 1
 
 
-async def send_chat_users_tasks_on_review_to_chat(query: types.CallbackQuery):
+async def send_chat_users_tasks_for_review_to_chat(query: types.CallbackQuery):
     if await is_admin.check(query):
-        tasks = app.task_service.get_all_tasks_on_review(chat_id=query.message.chat.id)
+        tasks = app.task_service.get_all_tasks_for_review(chat_id=query.message.chat.id)
 
         if not tasks:
             await query.bot.send_message(
                 chat_id=query.message.chat.id,
                 text=f"{task_view.generate_task_header(query.message.chat.title)}"
-                f"{Locale.Task.NO_TASKS_MSG}",
+                f"{Locale.Task.NO_TASKS_FOR_REVIEW_MSG}",
             )
             return
 

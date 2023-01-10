@@ -18,7 +18,8 @@ class EngLocale:
         SHOW_ALL_TASKS_BTN = "🔐 show all active tasks"
         SHOW_ADM_MENU_BTN = "🔐 send menu to pm"
 
-        SHOW_ALL_MY_TASKS = "🟢 Show my active tasks"
+        SHOW_ALL_MY_TASKS_FOR_REVIEW = "🟢 Show tasks - [i am reviewer]"
+        SHOW_ALL_MY_TASKS_ON_REVIEW = "🟢 Show tasks - [i am publisher]"
 
     class Task:
         # General
@@ -62,7 +63,8 @@ class EngLocale:
         TASK_IS_READY_REVIEW_AFTER_FIX = "🛠 Review after fix is required"
 
         # Other
-        NO_TASKS_MSG = "There is no tasks on review! 😎 🎉"
+        NO_TASKS_FOR_REVIEW_MSG = "No tasks for review 🤓 🎉"
+        NO_TASKS_ON_REVIEW_MSG = "No tasks on review 😎 ☀️"
         TASK_LIMIT_IS = "💤 Task query limit per time is"
 
     class Error:

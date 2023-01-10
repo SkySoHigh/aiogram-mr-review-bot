@@ -1,6 +1,6 @@
 from typing import List, Union
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 
 from db.controllers.base import BaseDBController
 from db.models.tasks import TasksModel, TaskStates
@@ -51,13 +51,19 @@ class TasksController(BaseDBController[TasksModel]):
                     .scalar()
                 )
 
-    def get_distinct_chats_ids_from_tasks_with_filter(
-        self, **filter_kwargs
+    def get_distinct_chats_ids_from_tasks_by_user_id(
+        self,
+        user_id: int,
     ) -> List[tuple]:
         with self.transport() as session:
             return (
                 session.query(self.model.chat_id)
-                .filter_by(**filter_kwargs)
+                .filter(
+                    or_(
+                        self.model.reviewer_id == user_id,
+                        self.model.publisher_id == user_id,
+                    )
+                )
                 .distinct()
                 .all()
             )

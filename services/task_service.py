@@ -113,7 +113,7 @@ class TaskService:
     def get_all_new_tasks(self, chat_id: int) -> List[TasksModel]:
         return self.__client.tasks.read_by(status=TaskStates.NEW, chat_id=chat_id)
 
-    def get_all_tasks_on_review(
+    def get_all_tasks_for_review(
         self, chat_id: int, reviewer_id: int = None
     ) -> List[TasksModel]:
         statuses = [
@@ -133,6 +133,21 @@ class TaskService:
                 status=statuses,
                 chat_id=chat_id,
             )
+
+    def get_all_tasks_on_review(
+        self, chat_id: int, publisher_id: int = None
+    ) -> List[TasksModel]:
+        statuses = [
+            TaskStates.NEW,
+            TaskStates.ON_REVIEW,
+            TaskStates.FIX_REQUIRED,
+            TaskStates.FINAL_REVIEW_REQUIRED,
+        ]
+        return self.__client.tasks.read_by_status_with_filter(
+            status=statuses,
+            publisher_id=publisher_id,
+            chat_id=chat_id,
+        )
 
     def count_tasks_on_review(self, chat_id: int, reviewer_id: int = None) -> int:
         statuses = [
@@ -157,11 +172,11 @@ class TaskService:
             id=task_id,
         )
 
-    def get_all_reviewer_chats_ids(self, reviewer_id: int) -> List[int]:
+    def get_chats_ids_by_user_id(self, user_id: int) -> List[int]:
         return [
             item
-            for sublist in self.__client.tasks.get_distinct_chats_ids_from_tasks_with_filter(
-                reviewer_id=reviewer_id
+            for sublist in self.__client.tasks.get_distinct_chats_ids_from_tasks_by_user_id(
+                user_id=user_id
             )
             for item in sublist
         ]
