@@ -32,6 +32,10 @@ It will run `black` -> `isort` -> `flake8`.
 
 
 ## Deployment
+### Migrations
+To apply database migration patches just run:
+`make db_upgrade_all` or ` make db_downgrade_all` to revert changes
+
 ### Run in bg (no demonized)
 1. Setup end as described in 'Setup environment'
 3. Run `nohup /vevn/bin/python3 run.py &`

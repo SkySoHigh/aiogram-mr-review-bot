@@ -73,6 +73,10 @@ class EngLocale:
             "Pls, send me review command with link to MR separated by whitespace.\n"
             "More info: /help"
         )
+        SUBMITTED_URL_ALREADY_EXISTS = (
+            "⛔️ Task with submitted url already registered.\n"
+            "Please, use functionality to show all active tasks."
+        )
         UNABLE_TO_INITIALIZE_CHAT = (
             "Bot can't initiate conversation with a user 😭. Please, add me first 🙏."
         )

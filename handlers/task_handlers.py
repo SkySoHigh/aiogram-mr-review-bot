@@ -1,6 +1,7 @@
 from typing import Union
 
 from aiogram import types
+from sqlalchemy.exc import IntegrityError
 
 from common import callbacks, commands, keyboards
 from db.models.tasks import TasksModel
@@ -20,14 +21,22 @@ async def publish_task_for_review(message: types.Message):
             disable_web_page_preview=True,
         )
     else:
-        task_id = app.task_service.create_task(
-            url=message.text.strip().split(" ", 1)[1],
-            chat_id=message.chat.id,
-            publisher_msg_id=message.message_id,
-            publisher_id=message.from_user.id,
-            publisher_name=message.from_user.username,
-            published_at=message.date,
-        )
+        try:
+            task_id = app.task_service.create_task(
+                url=message.text.strip().split(" ", 1)[1],
+                chat_id=message.chat.id,
+                publisher_msg_id=message.message_id,
+                publisher_id=message.from_user.id,
+                publisher_name=message.from_user.username,
+                published_at=message.date,
+            )
+        except IntegrityError:
+            await error_handlers.show_error_msg_for_n_seconds(
+                query=message,
+                error_msg=Locale.Error.SUBMITTED_URL_ALREADY_EXISTS,
+            )
+            return
+
         task = app.task_service.get_task_by_id(task_id=task_id)
         await message.reply(
             text=task_view.generate_task_body(task),
@@ -261,7 +270,11 @@ async def send_users_tasks_to_pm(
     on_review: bool = False,
 ):
     # Msg if there is no tasks FOR or ON review
-    no_tasks_msg = Locale.Task.NO_TASKS_ON_REVIEW_MSG if on_review else Locale.Task.NO_TASKS_FOR_REVIEW_MSG
+    no_tasks_msg = (
+        Locale.Task.NO_TASKS_ON_REVIEW_MSG
+        if on_review
+        else Locale.Task.NO_TASKS_FOR_REVIEW_MSG
+    )
 
     # Get all chats where user could be publisher or reviewer
     chats = []
@@ -274,8 +287,7 @@ async def send_users_tasks_to_pm(
     if not chats:
         await query.bot.send_message(
             chat_id=query.from_user.id,
-            text=f'{task_view.generate_task_header(chat_title="-")}'
-            f"{no_tasks_msg}",
+            text=f'{task_view.generate_task_header(chat_title="-")}' f"{no_tasks_msg}",
         )
 
     for chat_id in chats:
