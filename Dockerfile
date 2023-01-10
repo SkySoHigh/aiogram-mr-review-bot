@@ -13,5 +13,6 @@ RUN set +x \
 
 VOLUME data
 VOLUME logs
+VOLUME configs
 
 CMD ["python3", "run.py"]
