@@ -10,7 +10,7 @@ Note: No integrations with VCS. Works through the publication of a link to the M
 - Displays a list of tasks for a specific user across all chat or from specified one.
 
 ## RoadMap
-- [ ] Add antispam / antiflood feature
+- [x] Add antispam / antiflood feature
 - [ ] Add a custom scheduler for sending notifications about forgotten tasks
 - [ ] Rewrite synchronous interaction with the base to asynchronous
 

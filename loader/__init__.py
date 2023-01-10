@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 
@@ -8,13 +9,13 @@ from loader.initializer import Loader
 from locales.RuLocale import RuLocale
 from utils import logger
 
-__all__ = ["app", "dp", "bot", "run", "Locale"]
+__all__ = ["app", "dp", "bot", "run", "Locale", "config"]
 
 Locale = RuLocale
 
 config = ConfigProvider()
 bot = Bot(token=config.common.token.get_secret_value())
-dp = Dispatcher(bot)
+dp = Dispatcher(bot, storage=MemoryStorage())
 app = Loader(config=config, bot=bot, dp=dp)
 logger.setup_logging(logging_cfg_path=config.common.log_cfg_path)
 
@@ -28,9 +29,6 @@ async def on_startup(dp: Dispatcher):
     # Setup database
     app.init_db()
 
-    # Add middleware
-    dp.middleware.setup(LoggingMiddleware())
-
     # Register bot commands
     await commands.set_default_commands(dp)
 
@@ -38,6 +36,12 @@ async def on_startup(dp: Dispatcher):
     import handlers.error_handlers  # noqa
     import handlers.menu_handlers  # noqa
     import handlers.task_handlers  # noqa
+
+    # Add middleware
+    from middleware.antiflood import ThrottlingMiddleware
+
+    dp.middleware.setup(LoggingMiddleware())
+    dp.middleware.setup(ThrottlingMiddleware())
 
 
 async def on_shutdown(dp: Dispatcher):

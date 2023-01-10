@@ -11,6 +11,7 @@ class CommonConfig(BaseSettings):
         f"{Path(__file__).parent}/logging.json", env="log_cfg_path"
     )
     task_limit: int = Field(5, env="task_limit")
+    throttling_limit: int = Field(1, env="throttling_limit")
 
     class Config:
         case_sentive = False

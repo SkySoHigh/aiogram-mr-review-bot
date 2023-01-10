@@ -102,3 +102,7 @@ class EngLocale:
         MESSAGE_TO_EDIT_NOT_FOUND = "✉️ Message to edit not found. Looks like someone removed bot task from chat."
         TO_MANY_UNFINISHED_TASKS = "To many unfinished tasks"
         ERROR_MSG_WILL_BE_REMOVED_IN = "🕐 Error msg will be removed in"
+
+        THROTTLING_WARN = (
+            "⚡️To many requests.\n" "⏳Please try again in: "
+        )
