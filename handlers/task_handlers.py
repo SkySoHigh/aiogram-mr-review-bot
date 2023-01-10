@@ -96,7 +96,8 @@ async def reject_reviewed_task(query: types.CallbackQuery):
             chat_id=task.publisher_id,
             text=f"{task_view.generate_task_header(query.message.chat.title)}"
             f"{Locale.Task.TASK_FIX_REQUIRED}\n\n"
-            f"{task_view.generate_task_body(task)}",
+            f"{task_view.generate_task_body(task)}\n\n"
+            f"{common_helpers.generate_link_to_msg(chat_id=task.chat_id, msg_id=task.reply_msg_id)}\n",
         )
 
     else:
@@ -124,7 +125,8 @@ async def resubmit_reviewed_task_cb(query: types.CallbackQuery):
             chat_id=task.reviewer_id,
             text=f"{task_view.generate_task_header(query.message.chat.title)}"
             f"{Locale.Task.TASK_IS_READY_REVIEW_AFTER_FIX}\n\n"
-            f"{task_view.generate_task_body(task)}",
+            f"{task_view.generate_task_body(task)}\n\n"
+            f"{common_helpers.generate_link_to_msg(chat_id=task.chat_id, msg_id=task.reply_msg_id)}\n",
         )
     else:
         await error_handlers.show_error_msg_for_n_seconds(
@@ -159,7 +161,8 @@ async def submit_task_to_final_review(query: types.CallbackQuery):
                 chat_id=admin_id,
                 text=f"{task_view.generate_task_header(query.message.chat.title)}"
                 f"{Locale.Task.TASK_IS_READY_FOR_FINAL_REVIEW}\n\n"
-                f"{task_view.generate_task_body(task)}",
+                f"{task_view.generate_task_body(task)}\n\n"
+                f"{common_helpers.generate_link_to_msg(chat_id=task.chat_id, msg_id=task.reply_msg_id)}\n",
             )
     else:
         await error_handlers.show_error_msg_for_n_seconds(
@@ -208,15 +211,17 @@ async def reject_final_task_review(query: types.CallbackQuery):
             reply_markup=keyboards.get_review_task_menu(),
         )
         # Notify reviewer and publisher that task is rejected
+        text = f"{Locale.Task.TASK_MR_IS_REJECTED}\n\n" \
+               f"{task_view.generate_task_body(task)}\n\n" \
+               f"{common_helpers.generate_link_to_msg(chat_id=task.chat_id, msg_id=task.reply_msg_id)}\n"
+
         await query.bot.send_message(
             chat_id=task.reviewer_id,
-            text=f"{Locale.Task.TASK_MR_IS_REJECTED}\n\n"
-            f"{task_view.generate_task_body(task)}",
+            text=text,
         )
         await query.bot.send_message(
             chat_id=task.publisher_id,
-            text=f"{Locale.Task.TASK_MR_IS_REJECTED}\n\n"
-            f"{task_view.generate_task_body(task)}",
+            text=text,
         )
     else:
         await error_handlers.show_error_msg_for_n_seconds(
