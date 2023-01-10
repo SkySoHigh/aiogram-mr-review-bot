@@ -5,7 +5,7 @@ class EngLocale:
         )
 
         HELP_MSG = (
-            "This is QA Review Bot to distribute review tasks among testers."
+            "This is QA Review Bot to distribute review tasks among testers.\n"
             "Please, send me link to MR via:\n"
             "/review *link*"
         )
