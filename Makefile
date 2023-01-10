@@ -57,10 +57,10 @@ docker_build:
 	docker build -t ${IMAGE_NAME} .
 
 docker_clean:
-	docker rm ${CONTAINER_NAME} && docker rmi ${IMAGE_NAME}
+	docker rmi ${IMAGE_NAME}
 
 docker_run:
-	docker run -it -d -v $(shell pwd)/data:/${PROJECT}/data -v $(shell pwd)/logs:/${PROJECT}/logs --name ${CONTAINER_NAME} ${IMAGE_NAME}
+	docker run -it --rm -d -v $(shell pwd)/data:/${PROJECT}/data -v $(shell pwd)/logs:/${PROJECT}/logs -v $(shell pwd)/configs:/${PROJECT}/configs --name ${CONTAINER_NAME} ${IMAGE_NAME}
 
 docker_stop:
 	docker stop ${CONTAINER_NAME}
