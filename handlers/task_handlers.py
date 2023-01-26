@@ -38,12 +38,13 @@ async def publish_task_for_review(message: types.Message):
             return
 
         task = app.task_service.get_task_by_id(task_id=task_id)
-        await message.reply(
+        msg = await message.reply(
             text=task_view.generate_task_body(task),
             reply_markup=keyboards.get_new_task_menu(),
             disable_notification=True,
             disable_web_page_preview=True,
         )
+        app.task_service.set_reply_msg_id(task_id, msg.message_id)
 
 
 @dp.callback_query_handler(
