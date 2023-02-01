@@ -27,7 +27,7 @@ class DbConfig(BaseSettings):
     port: int = Field(..., env="port")
     sid: str = Field("", env="sid")
 
-    url: str = Field(None, env="dsn")
+    url: str = Field(None, env="url")
 
     echo_db_queries: bool = Field(False, env="echo_db_queries")
     echo_db_pool: bool = Field(False, env="echo_db_pool")
