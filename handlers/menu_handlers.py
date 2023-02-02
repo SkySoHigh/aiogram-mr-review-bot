@@ -2,7 +2,7 @@ from aiogram import types
 
 from common import callbacks, commands, keyboards
 from filters import is_admin
-from handlers.error_handlers import show_error_msg_for_n_seconds
+from handlers import error_handlers
 from loader import Locale, app, dp
 
 
@@ -35,6 +35,6 @@ async def show_adm_menu(query: types.CallbackQuery):
             disable_notification=True,
         )
     else:
-        await show_error_msg_for_n_seconds(
+        await error_handlers.show_error_msg_for_n_seconds(
             query=query, error_msg=Locale.Error.ADMIN_RIGHTS_REQUIRED
         )

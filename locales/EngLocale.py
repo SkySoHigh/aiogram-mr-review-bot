@@ -103,6 +103,4 @@ class EngLocale:
         TO_MANY_UNFINISHED_TASKS = "To many unfinished tasks"
         ERROR_MSG_WILL_BE_REMOVED_IN = "🕐 Error msg will be removed in"
 
-        THROTTLING_WARN = (
-            "⚡️To many requests.\n" "⏳Please try again in: "
-        )
+        THROTTLING_WARN = "⚡️To many requests.\n" "⏳Please try again in: "

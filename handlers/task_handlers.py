@@ -1,5 +1,7 @@
+import logging
 from typing import Union
 
+import aiogram.utils.exceptions
 from aiogram import types
 from sqlalchemy.exc import IntegrityError
 
@@ -152,12 +154,9 @@ async def submit_task_to_final_review(query: types.CallbackQuery):
             task=task, query=query, reply_markup=keyboards.get_final_tasks_menu()
         )
 
-        for admin_id in [
-            adm.user.id
-            for adm in await query.bot.get_chat_administrators(
-                chat_id=query.message.chat.id
-            )
-        ]:
+        for admin_id in await common_helpers.get_chat_admins(
+            bot=query.bot, chat_id=query.message.chat.id
+        ):
             await query.bot.send_message(
                 chat_id=admin_id,
                 text=f"{task_view.generate_task_header(query.message.chat.title)}"
@@ -386,8 +385,18 @@ async def send_chat_users_tasks_for_review_to_chat(query: types.CallbackQuery):
             sent_tasks += 1
 
         for u in task_to_reply_msg_id:
-            app.task_service.set_reply_msg_id(u[0], u[1])
-            await query.bot.delete_message(query.message.chat.id, u[2])
+            app.task_service.set_reply_msg_id(task_id=u[0], reply_msg_id=u[1])
+            try:
+                await query.bot.delete_message(query.message.chat.id, u[2])
+            except aiogram.utils.exceptions.MessageToDeleteNotFound:
+                pass
+            except aiogram.utils.exceptions.MessageCantBeDeleted as err:
+                logging.getLogger(__name__).error(
+                    f'Error occurred during msg removal for "send_chat_users_tasks_for_review_to_chat"\n'
+                    f"Msg: {err}\n",
+                    f"Task id, new msg id, old msg id: {u}",
+                )
+                pass
     else:
         await error_handlers.show_error_msg_for_n_seconds(
             query=query, error_msg=Locale.Error.ADMIN_RIGHTS_REQUIRED
