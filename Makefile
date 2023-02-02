@@ -56,17 +56,32 @@ db_current:
 docker_build:
 	docker build -t ${IMAGE_NAME} .
 
-docker_clean:
-	docker rmi ${IMAGE_NAME}
+docker_rmi:
+	docker rmi ${IMAGE_NAME} || true
+
+docker_clean: docker_stop docker_rmi
 
 docker_run:
-	docker run -it --rm -d -v $(shell pwd)/data:/${PROJECT}/data -v $(shell pwd)/logs:/${PROJECT}/logs -v $(shell pwd)/configs:/${PROJECT}/configs --name ${CONTAINER_NAME} ${IMAGE_NAME}
+	docker run -it --rm -d \
+	-v $(shell pwd)/.env:/${PROJECT}/.env \
+	-v $(shell pwd)/data:/${PROJECT}/data \
+	-v $(shell pwd)/logs:/${PROJECT}/logs \
+	-v $(shell pwd)/configs:/${PROJECT}/configs \
+	--name ${CONTAINER_NAME} ${IMAGE_NAME}
 
 docker_run_hm:
-	docker run -it --net=host --rm -d -v $(shell pwd)/data:/${PROJECT}/data -v $(shell pwd)/logs:/${PROJECT}/logs -v $(shell pwd)/configs:/${PROJECT}/configs --name ${CONTAINER_NAME} ${IMAGE_NAME}
+	docker run -it --net=host --rm -d \
+	-v $(shell pwd)/.env:/${PROJECT}/.env \
+	-v $(shell pwd)/data:/${PROJECT}/data \
+	-v $(shell pwd)/logs:/${PROJECT}/logs \
+	-v $(shell pwd)/configs:/${PROJECT}/configs \
+	--name ${CONTAINER_NAME} ${IMAGE_NAME}
 
 docker_stop:
-	docker stop ${CONTAINER_NAME}
+	docker stop ${CONTAINER_NAME} || true
+
+docker_deploy: docker_stop docker_clean docker_build docker_run
+
 
 
 
