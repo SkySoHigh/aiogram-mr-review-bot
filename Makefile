@@ -82,7 +82,7 @@ docker_stop:
 
 docker_deploy: docker_stop docker_clean docker_build docker_run
 
-docker_deploy_gm: docker_stop docker_clean docker_build docker_run_hm
+docker_deploy_hm: docker_stop docker_clean docker_build docker_run_hm
 
 
 
