@@ -62,7 +62,7 @@ docker_rmi:
 docker_clean: docker_stop docker_rmi
 
 docker_run:
-	docker run -it --rm -d \
+	docker run -it -d \
 	-v $(shell pwd)/.env:/${PROJECT}/.env \
 	-v $(shell pwd)/data:/${PROJECT}/data \
 	-v $(shell pwd)/logs:/${PROJECT}/logs \
@@ -70,7 +70,7 @@ docker_run:
 	--name ${CONTAINER_NAME} ${IMAGE_NAME}
 
 docker_run_hm:
-	docker run -it --net=host --rm -d \
+	docker run -it --net=host -d \
 	-v $(shell pwd)/.env:/${PROJECT}/.env \
 	-v $(shell pwd)/data:/${PROJECT}/data \
 	-v $(shell pwd)/logs:/${PROJECT}/logs \
@@ -82,6 +82,7 @@ docker_stop:
 
 docker_deploy: docker_stop docker_clean docker_build docker_run
 
+docker_deploy_gm: docker_stop docker_clean docker_build docker_run_hm
 
 
 
